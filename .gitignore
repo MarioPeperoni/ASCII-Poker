@@ -1,2 +1,5 @@
+
+renderer
+*.dSYM
 .vscode/
 main
