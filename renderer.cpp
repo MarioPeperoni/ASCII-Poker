@@ -4,13 +4,18 @@
 #include "renderer.h"
 #include "card.h"
 
+#define WINDOW_WIDTH 160
+#define WINDOW_HEIGHT 50
+
 using namespace std;
 
 rendererStruct rendererStructVar;
-std::string cardBuff[2][11];
+std::string cardBuff[12][11];   //Card buffer stores all visuals of cards now in game 0-4 table cards 5-6 p1 7-8 p2 9-10 p3 11-12 p4
+
+std::string UIBuff[WINDOW_WIDTH][WINDOW_HEIGHT];    //UI Buffer stores all UI items
 
 
-string rendererStruct::drawDecoOnCard(cardStruct::Rank rank, int w1, int w2, int w3, int w4, int w5, string suitCh)
+string rendererStruct::drawDecoOnCard(cardStruct::Rank rank, int w1, int w2, int w3, int w4, int w5, string suitCh) //Insert card decoration while buffering graphics
 {
     if ((int)rank == w1 || (int)rank == w2 || (int)rank == w3 || (int)rank == w4 || (int)rank == w5)
     {
@@ -19,7 +24,7 @@ string rendererStruct::drawDecoOnCard(cardStruct::Rank rank, int w1, int w2, int
     return " ";
 }
 
-string rendererStruct::drawCardRank(cardStruct::Rank rank, bool up)
+string rendererStruct::drawCardRank(cardStruct::Rank rank, bool up) //Outputs visual representation of card rank for drawing in buffer
 {
     string result;
     switch ((int)rank)
@@ -48,13 +53,18 @@ string rendererStruct::drawCardRank(cardStruct::Rank rank, bool up)
     
 }
 
-void rendererStruct::bufferCard(cardStruct::Rank rank, cardStruct::Suit suit, int cardNo)
+void SetCursorPos(int XPos, int YPos)   //Sets cursor position on console screen
 {
-    string suitChar;
+    printf("\033[%d;%dH", YPos+1, XPos+1);
+}
+
+void rendererStruct::bufferCard(cardStruct::Rank rank, cardStruct::Suit suit, int cardNo)   //Buffers card
+{
+    string suitChar;    //Stores suit icon
     switch ((int)suit)
     {
     case 3:
-        suitChar = "\x1b[31m♥\x1b[0m";
+        suitChar = "\x1b[31m♥\x1b[0m"; //Red colour
         break;
     case 4:
         suitChar = "\x1b[31m♦\x1b[0m";
@@ -80,15 +90,47 @@ void rendererStruct::bufferCard(cardStruct::Rank rank, cardStruct::Suit suit, in
     cardBuff[cardNo][10] = "╚═══════════════╝";                      //Row 11
 }
 
+void rendererStruct::bufferHud()    //Buffers HUD
+{
+    for (int i = 0; i < WINDOW_WIDTH; i++)
+    {
+        UIBuff[i][40] = "═";    //Add bottom line of HUD
+    }
+}
+
+void rendererStruct::deleteBuffer() //Clears buffer
+{
+    for (int y = 0; y < WINDOW_HEIGHT; y++)
+    {
+        for (int x = 0; x < WINDOW_WIDTH; x++)
+        {
+            UIBuff[x][y] = "";
+        }
+    }
+}
+
 void rendererStruct::renderScreen()
 {
-    for (int i = 0; i < 11; i++)
+    SetCursorPos(0,40); ///Draws down UI Bar
+    for (int i = 0; i < WINDOW_WIDTH; i++)
     {
-        for (int j = 0; j < 2; j++)
+        cout << "=";
+    }
+    SetCursorPos(0,10); //Draws cards
+    for (int i = 0; i < 11; i++)    //Size of card is 11 rows
+    {
+        for (int j = 0; j < 5; j++) //Table cards index
         {
             cout << cardBuff[j][i];
         }
         cout << endl;
-        
+    }
+    for (int i = 0; i < 11; i++)    //Size of card is 11 rows
+    {
+        for (int j = 5; j < 7; j++) //Player 1 buffer indexes
+        {
+            cout << cardBuff[j][i];
+        }
+        cout << endl;
     }
 }

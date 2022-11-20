@@ -28,6 +28,15 @@ struct cardStruct
         CLUBS,
         SPADES
     };
+
+    struct singleCard
+    {
+        Rank rank;
+        Suit suit;
+    };
+
+
+    
 };
 
 
