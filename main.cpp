@@ -1,9 +1,11 @@
 #include <iostream>
 #include <random>
 #include <time.h>
+#include <curses.h>
 
 #include "card.h"
 #include "renderer.h"
+#include "inputHandler.h"
 
 using namespace std;
 
@@ -14,9 +16,11 @@ int bufferIndex = 0;
 
 int main()
 {
+    inputHandlerStruct inputHandelerObj;
     cardStruct cardObj;
     rendererStruct rednererObj;
     srand(time(0)); //Set seed of randomizer for current time
+    //=====================================================GAME INIT====================================================
     for (int i = 0; i < 4; i++) //Generate cards for players
     {
         playerH[i][0].rank = (cardStruct::Rank)((rand() % 12) + 1);
@@ -29,9 +33,6 @@ int main()
         cardsTable[i].rank = (cardStruct::Rank)((rand() % 12) + 1);
         cardsTable[i].suit = (cardStruct::Suit)((rand() % 4) + 3);
     }
-
-    system("clear");
-
     for (int i = 0; i < 5; i++) //Buffer all table cards
     {
         rednererObj.bufferCard(cardsTable[i].rank, cardsTable[i].suit, bufferIndex);
@@ -43,7 +44,12 @@ int main()
         rednererObj.bufferCard(playerH[i][1].rank, playerH[i][1].suit, bufferIndex + 1);
         bufferIndex += 2;   //Player cards indexes 5-12
     }
-    rednererObj.renderScreen(); //Render screen from buffer
+    //===================================================RENDER LOOP==================================================
+    while (true)
+    {
+        rednererObj.renderScreen(inputHandelerObj.cursorPos); //Render screen from buffer
+        inputHandelerObj.getInput();
+    }
     cin.get();  //Wait for user input
     return 0;
 }

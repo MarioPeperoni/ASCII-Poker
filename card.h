@@ -34,10 +34,5 @@ struct cardStruct
         Rank rank;
         Suit suit;
     };
-
-
-    
 };
-
-
 #endif
