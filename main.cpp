@@ -53,6 +53,7 @@ int main()
             playerObject[i].playerName = "Player " + to_string(i + 1);
         }
     }
+    playerObject[0].isCurrentPlayer = true; //Player 1 is current player
     
     //===================================================RENDER LOOP==================================================
     while (true)

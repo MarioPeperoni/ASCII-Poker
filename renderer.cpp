@@ -20,6 +20,12 @@
 #define UI_PLAYER_3_TAG_POS 85
 #define UI_PLAYER_4_TAG_POS 115
 
+#define PLAYER_HAND_RENDER_POS_X 60
+#define PLAYER_HAND_RENDER_POS_Y 30
+
+#define TABLE_CARDS_RENDER_POS_X 35
+#define TABLE_CARDS_RENDER_POS_Y 15
+
 using namespace std;
 
 inputHandlerStruct inputHandlerStructObj;
@@ -177,57 +183,62 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
 
     //Draw players data on top of the screen
     //Player 1
-    SetCursorPos(UI_PLAYER_1_TAG_POS, 0);
+    if(players[0].isCurrentPlayer){SetCursorPos(UI_PLAYER_1_TAG_POS, 0); cout << "║                  ║";}
+    SetCursorPos(UI_PLAYER_1_TAG_POS, 0 + (int)players[0].isCurrentPlayer);
     cout << "╚══════════════════╝";
-    SetCursorPos(UI_PLAYER_1_TAG_POS + ((20 - players[0].playerName.length()) / 2),1);
+    SetCursorPos(UI_PLAYER_1_TAG_POS + ((20 - players[0].playerName.length()) / 2), 1 + (int)players[0].isCurrentPlayer);
     cout << players[0].playerName;
-    SetCursorPos(UI_PLAYER_1_TAG_POS + ((20 - to_string(players[0].money).length()) / 2),2);
+    SetCursorPos(UI_PLAYER_1_TAG_POS + ((20 - to_string(players[0].money).length()) / 2), 2 + (int)players[0].isCurrentPlayer);
     cout << players[0].money;
 
     //Player 2
-    SetCursorPos(UI_PLAYER_2_TAG_POS, 0);
+    if(players[1].isCurrentPlayer){SetCursorPos(UI_PLAYER_2_TAG_POS, 0); cout << "║                  ║";}
+    SetCursorPos(UI_PLAYER_2_TAG_POS, 0 + (int)players[1].isCurrentPlayer);
     cout << "╚══════════════════╝";
-    SetCursorPos(UI_PLAYER_2_TAG_POS + ((20 - players[1].playerName.length()) / 2),1);
+    SetCursorPos(UI_PLAYER_2_TAG_POS + ((20 - players[1].playerName.length()) / 2), 1 + (int)players[1].isCurrentPlayer);
     cout << players[1].playerName;
-    SetCursorPos(UI_PLAYER_2_TAG_POS + ((20 - to_string(players[1].money).length()) / 2),2);
+    SetCursorPos(UI_PLAYER_2_TAG_POS + ((20 - to_string(players[1].money).length()) / 2), 2 + (int)players[1].isCurrentPlayer);
     cout << players[1].money;
 
     //Player 3
-    SetCursorPos(UI_PLAYER_3_TAG_POS, 0);
+    if(players[2].isCurrentPlayer){SetCursorPos(UI_PLAYER_3_TAG_POS, 0); cout << "║                  ║";}
+    SetCursorPos(UI_PLAYER_3_TAG_POS, 0 + (int)players[2].isCurrentPlayer);
     cout << "╚══════════════════╝";
-    SetCursorPos(UI_PLAYER_3_TAG_POS + ((20 - players[2].playerName.length()) / 2),1);
+    SetCursorPos(UI_PLAYER_3_TAG_POS + ((20 - players[2].playerName.length()) / 2), 1 + (int)players[2].isCurrentPlayer);
     cout << players[2].playerName;
-    SetCursorPos(UI_PLAYER_3_TAG_POS + ((20 - to_string(players[2].money).length()) / 2),2);
+    SetCursorPos(UI_PLAYER_3_TAG_POS + ((20 - to_string(players[2].money).length()) / 2), 2 + (int)players[2].isCurrentPlayer);
     cout << players[2].money;
 
     //Player 4
-    SetCursorPos(UI_PLAYER_4_TAG_POS, 0);
+    if(players[3].isCurrentPlayer){SetCursorPos(UI_PLAYER_4_TAG_POS, 0); cout << "║                  ║";}
+    SetCursorPos(UI_PLAYER_4_TAG_POS, 0 + (int)players[3].isCurrentPlayer);
     cout << "╚══════════════════╝";
-    SetCursorPos(UI_PLAYER_4_TAG_POS + ((20 - players[3].playerName.length()) / 2),1);
+    SetCursorPos(UI_PLAYER_4_TAG_POS + ((20 - players[3].playerName.length()) / 2), 1 + (int)players[3].isCurrentPlayer);
     cout << players[3].playerName;
-    SetCursorPos(UI_PLAYER_4_TAG_POS + ((20 - to_string(players[3].money).length()) / 2),2);
+    SetCursorPos(UI_PLAYER_4_TAG_POS + ((20 - to_string(players[3].money).length()) / 2), 2 + (int)players[3].isCurrentPlayer);
     cout << players[3].money;
 
 
     //================================================TABLE=================================================
-    SetCursorPos(0,10); //Draws cards
-    for (int i = 0; i < 11; i++)    //Size of card is 11 rows
+    SetCursorPos(TABLE_CARDS_RENDER_POS_X, TABLE_CARDS_RENDER_POS_Y); //Draws table cards
+    for (int i = -1; i < 11; i++)    //Size of card is 11 rows
     {
         for (int j = 0; j < 5; j++) //Table cards index
         {
             cout << cardBuff[j][i];
         }
-        cout << endl;
+        SetCursorPos(TABLE_CARDS_RENDER_POS_X, TABLE_CARDS_RENDER_POS_Y + i);
     }
-    for (int i = 0; i < 11; i++)    //Size of card is 11 rows
+    SetCursorPos(PLAYER_HAND_RENDER_POS_X, PLAYER_HAND_RENDER_POS_Y);
+    for (int i = -1; i < 11; i++)    //Size of card is 11 rows
     {
         for (int j = 5; j < 7; j++) //Player 1 buffer indexes
         {
             cout << cardBuff[j][i];
         }
-        cout << endl;
+        SetCursorPos(PLAYER_HAND_RENDER_POS_X, PLAYER_HAND_RENDER_POS_Y + i);
     }
-    
+
     SetCursorPos(0 ,WINDOW_HEIGHT); //Reset cursor to bottom of window
     cout << " ";    //For setting max widnow height
     SetCursorPos(0 ,WINDOW_HEIGHT - 2); //Set cursor for input
