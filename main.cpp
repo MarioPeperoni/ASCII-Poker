@@ -6,13 +6,15 @@
 #include "card.h"
 #include "renderer.h"
 #include "inputHandler.h"
+#include "playerData.h"
 
 using namespace std;
 
-cardStruct::singleCard playerH[4][2];   //4 players 2 cards
+playerDataStruct playerObject[4];   //Player object that stores all player values
 cardStruct::singleCard cardsTable[5];   //5 table cards
 
-int bufferIndex = 0;
+int bufferIndex = 0;    //Buffer index
+bool initDefNames = true;   //Bool for creating default names for players
 
 int main()
 {
@@ -23,10 +25,10 @@ int main()
     //=====================================================GAME INIT====================================================
     for (int i = 0; i < 4; i++) //Generate cards for players
     {
-        playerH[i][0].rank = (cardStruct::Rank)((rand() % 12) + 1);
-        playerH[i][0].suit = (cardStruct::Suit)((rand() % 4) + 3);
-        playerH[i][1].rank = (cardStruct::Rank)((rand() % 12) + 1);
-        playerH[i][1].suit = (cardStruct::Suit)((rand() % 4) + 3);
+        playerObject[i].playerHand[0].rank = (cardStruct::Rank)((rand() % 12) + 1);
+        playerObject[i].playerHand[0].suit = (cardStruct::Suit)((rand() % 4) + 3);
+        playerObject[i].playerHand[1].rank = (cardStruct::Rank)((rand() % 12) + 1);
+        playerObject[i].playerHand[1].suit = (cardStruct::Suit)((rand() % 4) + 3);
     }
     for (int i = 0; i < 5; i++)  //Generate cards at the table
     {
@@ -40,16 +42,23 @@ int main()
     }
     for (int i = 1; i < 5; i++) //Buffer all player cards
     {
-        rednererObj.bufferCard(playerH[i][0].rank, playerH[i][0].suit, bufferIndex);
-        rednererObj.bufferCard(playerH[i][1].rank, playerH[i][1].suit, bufferIndex + 1);
+        rednererObj.bufferCard(playerObject[i].playerHand[0].rank, playerObject[i].playerHand[0].suit, bufferIndex);
+        rednererObj.bufferCard(playerObject[i].playerHand[1].rank, playerObject[i].playerHand[1].suit, bufferIndex + 1);
         bufferIndex += 2;   //Player cards indexes 5-12
     }
+    if (initDefNames)   //Set default player names "Player (no)"
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            playerObject[i].playerName = "Player " + to_string(i + 1);
+        }
+    }
+    
     //===================================================RENDER LOOP==================================================
     while (true)
     {
-        rednererObj.renderScreen(inputHandelerObj.cursorPos); //Render screen from buffer
+        rednererObj.renderScreen(inputHandelerObj.cursorPos, playerObject, 1); //Render screen from buffer
         inputHandelerObj.getInput();
     }
-    cin.get();  //Wait for user input
     return 0;
 }

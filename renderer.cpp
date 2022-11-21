@@ -4,6 +4,7 @@
 #include "renderer.h"
 #include "card.h"
 #include "inputHandler.h"
+#include "playerData.h"
 
 #define WINDOW_WIDTH 160
 #define WINDOW_HEIGHT 50
@@ -14,6 +15,11 @@
 #define UI_BUTTON_2_START_POS 30
 #define UI_BUTTON_3_START_POS 50
 
+#define UI_PLAYER_1_TAG_POS 25
+#define UI_PLAYER_2_TAG_POS 55
+#define UI_PLAYER_3_TAG_POS 85
+#define UI_PLAYER_4_TAG_POS 115
+
 using namespace std;
 
 inputHandlerStruct inputHandlerStructObj;
@@ -21,9 +27,6 @@ rendererStruct rendererStructVar;
 std::string cardBuff[12][11];   //Card buffer stores all visuals of cards now in game 0-4 table cards 5-6 p1 7-8 p2 9-10 p3 11-12 p4
 
 std::string UIBuff[WINDOW_WIDTH][WINDOW_HEIGHT];    //UI Buffer stores all UI items
-
-int tempCursorLogic;
-
 
 string rendererStruct::drawDecoOnCard(cardStruct::Rank rank, int w1, int w2, int w3, int w4, int w5, string suitCh) //Insert card decoration while buffering graphics
 {
@@ -102,18 +105,7 @@ void rendererStruct::bufferCard(cardStruct::Rank rank, cardStruct::Suit suit, in
     cardBuff[cardNo][10] = "╚═══════════════╝";                      //Row 11
 }
 
-void rendererStruct::deleteBuffer() //Clears buffer
-{
-    for (int y = 0; y < WINDOW_HEIGHT; y++)
-    {
-        for (int x = 0; x < WINDOW_WIDTH; x++)
-        {
-            UIBuff[x][y] = "";
-        }
-    }
-}
-
-void rendererStruct::renderScreen(int cursorPos)
+void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], int currentPlayer)
 {   
     system("clear");
     //=================================================HUD=================================================
@@ -130,6 +122,11 @@ void rendererStruct::renderScreen(int cursorPos)
     SetCursorPos(3,38);
     cout << "Current Pot: 100000$";
     SetCursorPos(0,40);
+    for (int i = 0; i < WINDOW_WIDTH; i++)
+    {
+        cout << "█";
+    }
+    SetCursorPos(0,44);
     for (int i = 0; i < WINDOW_WIDTH; i++)
     {
         cout << "█";
@@ -178,6 +175,40 @@ void rendererStruct::renderScreen(int cursorPos)
         break;
     }
 
+    //Draw players data on top of the screen
+    //Player 1
+    SetCursorPos(UI_PLAYER_1_TAG_POS, 0);
+    cout << "╚══════════════════╝";
+    SetCursorPos(UI_PLAYER_1_TAG_POS + ((20 - players[0].playerName.length()) / 2),1);
+    cout << players[0].playerName;
+    SetCursorPos(UI_PLAYER_1_TAG_POS + ((20 - to_string(players[0].money).length()) / 2),2);
+    cout << players[0].money;
+
+    //Player 2
+    SetCursorPos(UI_PLAYER_2_TAG_POS, 0);
+    cout << "╚══════════════════╝";
+    SetCursorPos(UI_PLAYER_2_TAG_POS + ((20 - players[1].playerName.length()) / 2),1);
+    cout << players[1].playerName;
+    SetCursorPos(UI_PLAYER_2_TAG_POS + ((20 - to_string(players[1].money).length()) / 2),2);
+    cout << players[1].money;
+
+    //Player 3
+    SetCursorPos(UI_PLAYER_3_TAG_POS, 0);
+    cout << "╚══════════════════╝";
+    SetCursorPos(UI_PLAYER_3_TAG_POS + ((20 - players[2].playerName.length()) / 2),1);
+    cout << players[2].playerName;
+    SetCursorPos(UI_PLAYER_3_TAG_POS + ((20 - to_string(players[2].money).length()) / 2),2);
+    cout << players[2].money;
+
+    //Player 4
+    SetCursorPos(UI_PLAYER_4_TAG_POS, 0);
+    cout << "╚══════════════════╝";
+    SetCursorPos(UI_PLAYER_4_TAG_POS + ((20 - players[3].playerName.length()) / 2),1);
+    cout << players[3].playerName;
+    SetCursorPos(UI_PLAYER_4_TAG_POS + ((20 - to_string(players[3].money).length()) / 2),2);
+    cout << players[3].money;
+
+
     //================================================TABLE=================================================
     SetCursorPos(0,10); //Draws cards
     for (int i = 0; i < 11; i++)    //Size of card is 11 rows
@@ -196,6 +227,7 @@ void rendererStruct::renderScreen(int cursorPos)
         }
         cout << endl;
     }
+    
     SetCursorPos(0 ,WINDOW_HEIGHT); //Reset cursor to bottom of window
     cout << " ";    //For setting max widnow height
     SetCursorPos(0 ,WINDOW_HEIGHT - 2); //Set cursor for input
