@@ -11,6 +11,10 @@ RETURN CODES:
 0 - Succesfully registerd key press
 1 - Error
 2 - Start new game trigger
+3 - Next game stage trigger
+4 - Fold button pressed trigger
+5 - Call button pressed trigger
+6 - Raise button pressed trigger
 */
 
 int inputHandlerStruct::getInput()
@@ -43,8 +47,28 @@ int inputHandlerStruct::getInput()
         return 0;
         break;
 
-    case 'n':   //New game button trigger
+    case 'm':   //New game button trigger
         return 2;
+    
+    case 'n':   //Next game stage button trigger
+        return 3;
+    
+    case 'p':
+        switch (inputHandlerStruct::cursorPos)
+        {
+        case 1:
+            return 4;   //Fold button pressed trigger
+            break;
+        case 2:
+            return 5;   //Call button pressed trigger
+            break;
+        case 3:
+            return 6;   //Raise button pressed trigger
+            break;
+        default:
+            return 1;   //Return error code if selected button is not existing
+            break;
+        }
 
     default:
         return 1;   //Return error code if not found in switch

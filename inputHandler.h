@@ -4,7 +4,7 @@
 struct inputHandlerStruct
 {
     public:
-    int cursorPos = 1;  //Cursor position index for buttons
+    int cursorPos = 1;  //Cursor position index for buttons 1-3
     int getInput();     //Input loop function
 };
 

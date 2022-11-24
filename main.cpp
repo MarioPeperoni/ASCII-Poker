@@ -17,6 +17,8 @@ inputHandlerStruct inputHandelerObj;
 cardStruct cardObj;
 rendererStruct rednererObj;
 
+int gameState = 0;  //State of the game ID (refers to no of cards on the table)
+
 int bufferIndex = 0;    //Buffer index
 bool initDefNames = true;   //Bool for creating default names for players
 
@@ -24,7 +26,7 @@ void generatePlayerCards()
 {
     for (int i = 0; i < 4; i++) //Generate cards for players
     {
-        playerObject[i].playerHand[0].rank = (cardStruct::Rank)((rand() % 12) + 1);
+        playerObject[i].playerHand[0].rank = (cardStruct::Rank)((rand() % 12) + 1); //Adds +1 for index 2-13
         playerObject[i].playerHand[0].suit = (cardStruct::Suit)((rand() % 4) + 3);
         playerObject[i].playerHand[1].rank = (cardStruct::Rank)((rand() % 12) + 1);
         playerObject[i].playerHand[1].suit = (cardStruct::Suit)((rand() % 4) + 3);
@@ -61,6 +63,7 @@ void createNewGame()
     generatePlayerCards();
     generateTableCards();
     bufferAll();
+    gameState = 0;
 }
 
 int main()
@@ -83,10 +86,28 @@ int main()
     //===================================================RENDER LOOP==================================================
     while (true)    //Gameplay loop
     {
-        rednererObj.renderScreen(inputHandelerObj.cursorPos, playerObject, 1); //Render screen from buffer
-        if (inputHandelerObj.getInput() == 2)
+        rednererObj.renderScreen(inputHandelerObj.cursorPos, playerObject, 1, gameState); //Render screen from buffer
+        switch (inputHandelerObj.getInput())
         {
+        case 2: //M button pressed
             createNewGame();
+            break;
+
+        case 3: //N button pressed
+            gameState++;
+            break;
+        
+        case 4: //Fold button pressed
+            break;
+
+        case 5: //Call button pressed
+            break;
+
+        case 6: //Raise button pressed
+            break;
+        
+        default:
+            break;
         }
     }
     return 0;
