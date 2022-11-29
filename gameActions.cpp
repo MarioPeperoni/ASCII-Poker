@@ -22,7 +22,6 @@ bool gameActionsStruct::raiseAction(playerDataStruct playerObj)
     int raisedMoney;    //Money inputed from player
     rendererObj.SetCursorPos(UI_CALL_INPUT_BOX_POS, UI_BUTTON_ROW_ID);  //Cursor positon set to call input box
     gameActionsStruct::currentActionText = "Insert raise value...";
-    inputAgain: //goto tag
     std::cin >> raisedMoney;
     if (raisedMoney > playerObj.money)  //If player do not have enough money in balance
     {
@@ -32,6 +31,7 @@ bool gameActionsStruct::raiseAction(playerDataStruct playerObj)
     }
     gameActionsStruct::currentActionText = "Raised " + std::to_string(raisedMoney) + "$";
     playerObj.money -= raisedMoney; //Subtract raised moeny from player balance
+    playerObj.lastPlayerAction = "Raised " + std::to_string(raisedMoney) + "$";
     fetchedPlayerObj = playerObj;   //Copy contents of playerObj to fetchedPlayerObj
     return true;    //Action finished succesfully
 }

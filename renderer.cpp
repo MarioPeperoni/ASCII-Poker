@@ -12,7 +12,7 @@ using namespace std;
 inputHandlerStruct inputHandlerStructObj;
 rendererStruct rendererStructVar;
 
-std::string cardBuff[12][11];   //Card buffer stores all visuals of cards now in game 0-4 table cards 5-6 p1 7-8 p2 9-10 p3 11-12 p4
+std::string cardBuff[13][11];   //Card buffer stores all visuals of cards now in game 0-4 table cards 5-6 p1 7-8 p2 9-10 p3 11-12 p4
 
 std::string UIBuff[WINDOW_WIDTH][WINDOW_HEIGHT];    //UI Buffer stores all UI items
 
@@ -188,6 +188,8 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     cout << players[0].playerName;
     SetCursorPos(UI_PLAYER_1_TAG_POS + ((20 - to_string(players[0].money).length()) / 2), 2 + (int)players[0].isCurrentPlayer);
     cout << players[0].money << "$";
+    SetCursorPos(UI_PLAYER_1_TAG_POS + ((20 - players[0].lastPlayerAction.length()) / 2) + 1, 3 + (int)players[0].isCurrentPlayer);
+    cout << players[0].lastPlayerAction;
 
     //Player 2
     if(players[1].isCurrentPlayer){SetCursorPos(UI_PLAYER_2_TAG_POS, 0); cout << "║                  ║";}
@@ -197,6 +199,8 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     cout << players[1].playerName;
     SetCursorPos(UI_PLAYER_2_TAG_POS + ((20 - to_string(players[1].money).length()) / 2), 2 + (int)players[1].isCurrentPlayer);
     cout << players[1].money << "$";
+    SetCursorPos(UI_PLAYER_2_TAG_POS + ((20 - players[1].lastPlayerAction.length()) / 2) + 1, 3 + (int)players[1].isCurrentPlayer);
+    cout << players[1].lastPlayerAction;
 
     //Player 3
     if(players[2].isCurrentPlayer){SetCursorPos(UI_PLAYER_3_TAG_POS, 0); cout << "║                  ║";}
@@ -206,6 +210,8 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     cout << players[2].playerName;
     SetCursorPos(UI_PLAYER_3_TAG_POS + ((20 - to_string(players[2].money).length()) / 2), 2 + (int)players[2].isCurrentPlayer);
     cout << players[2].money << "$";
+    SetCursorPos(UI_PLAYER_3_TAG_POS + ((20 - players[2].lastPlayerAction.length()) / 2) + 1, 3 + (int)players[2].isCurrentPlayer);
+    cout << players[2].lastPlayerAction;
 
     //Player 4
     if(players[3].isCurrentPlayer){SetCursorPos(UI_PLAYER_4_TAG_POS, 0); cout << "║                  ║";}
@@ -215,6 +221,8 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     cout << players[3].playerName;
     SetCursorPos(UI_PLAYER_4_TAG_POS + ((20 - to_string(players[3].money).length()) / 2), 2 + (int)players[3].isCurrentPlayer);
     cout << players[3].money << "$";
+    SetCursorPos(UI_PLAYER_4_TAG_POS + ((20 - players[3].lastPlayerAction.length()) / 2) + 1, 3 + (int)players[3].isCurrentPlayer);
+    cout << players[3].lastPlayerAction;
 
 
     //================================================TABLE=================================================
@@ -230,9 +238,37 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     SetCursorPos(PLAYER_HAND_RENDER_POS_X, PLAYER_HAND_RENDER_POS_Y);
     for (int i = -1; i < 11; i++)    //Size of card is 11 rows
     {
-        for (int j = 5; j < 7; j++) //Player 1 buffer indexes
+        switch (currentPlayer)
         {
-            cout << cardBuff[j][i];
+        case 0:
+            for (int j = 5; j < 7; j++) //Player 1 buffer indexes
+            {
+                cout << cardBuff[j][i];
+            }
+            break;
+
+        case 1:
+            for (int j = 7; j < 9; j++) //Player 2 buffer indexes
+            {
+                cout << cardBuff[j][i];
+            }
+            break;
+
+        case 2:
+            for (int j = 9; j < 11; j++) //Player 3 buffer indexes
+            {
+                cout << cardBuff[j][i];
+            }
+            break;
+
+        case 3:
+            for (int j = 11; j < 13; j++) //Player 4 buffer indexes
+            {
+                cout << cardBuff[j][i];
+            }
+            break;
+        default:
+            break;
         }
         SetCursorPos(PLAYER_HAND_RENDER_POS_X, PLAYER_HAND_RENDER_POS_Y + i);
     }
@@ -249,6 +285,5 @@ void rendererStruct::renderPlayerChangeScreen(int currentPlayer)
     cout << "[Player " + to_string(currentPlayer + 1) + " turn]";
     SetCursorPos((WINDOW_WIDTH/2) - 16, WINDOW_HEIGHT/2 + 1);
     cout << "Press any button to continue...";
-    cin.get();
     cin.get();
 }

@@ -52,7 +52,7 @@ void bufferAll()
         rednererObj.bufferCard(cardsTable[i].rank, cardsTable[i].suit, bufferIndex);
         bufferIndex++;  //Table cards indexes 0-4
     }
-    for (int i = 1; i < 5; i++) //Buffer all player cards
+    for (int i = 0; i < 4; i++) //Buffer all player cards
     {
         rednererObj.bufferCard(playerObject[i].playerHand[0].rank, playerObject[i].playerHand[0].suit, bufferIndex);
         rednererObj.bufferCard(playerObject[i].playerHand[1].rank, playerObject[i].playerHand[1].suit, bufferIndex + 1);
@@ -104,11 +104,11 @@ int main()
     //===================================================RENDER LOOP==================================================
     while (true)    //Gameplay loop
     {
-        rednererObj.renderScreen(inputHandelerObj.cursorPos, playerObject, 1, gameState, actionsObj); //Render screen from buffer
+        rednererObj.renderScreen(inputHandelerObj.cursorPos, playerObject, currPlayer, gameState, actionsObj); //Render screen from buffer
         switch (inputHandelerObj.getInput())
         {
         case 2: //M button pressed
-            createNewGame();
+            gameState++;
             break;
 
         case 3: //N button pressed

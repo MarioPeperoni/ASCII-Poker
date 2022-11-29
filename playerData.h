@@ -11,6 +11,9 @@ struct playerDataStruct
     std::string playerName;  //Name of a player
     cardStruct::singleCard playerHand[2];   //2 cards in players hand
     bool isCurrentPlayer = false;
+    std::string lastPlayerAction = "";
+    bool folded;
+    bool inGame;
 };
 
 #endif
