@@ -7,12 +7,15 @@
 rendererStruct rendererObj;
 playerDataStruct fetchedPlayerObj;
 
-bool gameActionsStruct::foldAction()
+bool gameActionsStruct::foldAction(playerDataStruct playerObj)
 {
-    return false;
+    playerObj.folded = true;    //Flag fold
+    playerObj.lastPlayerAction = "Folded";  //Set player last action string
+    fetchedPlayerObj = playerObj;   //Copy contents of playerObj to fetchedPlayerObj
+    return true;
 }
 
-bool gameActionsStruct::callAction()
+bool gameActionsStruct::callAction(playerDataStruct playerObj)
 {
     return false;
 }
@@ -31,7 +34,7 @@ bool gameActionsStruct::raiseAction(playerDataStruct playerObj)
     }
     gameActionsStruct::currentActionText = "Raised " + std::to_string(raisedMoney) + "$";
     playerObj.money -= raisedMoney; //Subtract raised moeny from player balance
-    playerObj.lastPlayerAction = "Raised " + std::to_string(raisedMoney) + "$";
+    playerObj.lastPlayerAction = "Raised " + std::to_string(raisedMoney) + "$"; //Set player last action string
     fetchedPlayerObj = playerObj;   //Copy contents of playerObj to fetchedPlayerObj
     return true;    //Action finished succesfully
 }

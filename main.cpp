@@ -78,7 +78,7 @@ void switchPlayer()
     }
     currPlayer++;   //Go to next player index
     playerObject[currPlayer].isCurrentPlayer = true;    //Set true flag on next player
-    rednererObj.renderPlayerChangeScreen(currPlayer);
+    playerObject[currPlayer].folded ? switchPlayer() : rednererObj.renderPlayerChangeScreen(currPlayer);    //Check if player fold
 }
 
 void _do_nothing(){}    //Do nothing void
@@ -117,11 +117,15 @@ int main()
             break;
         
         case 4: //Fold button pressed
-            actionsObj.foldAction();
+            actionsObj.foldAction(playerObject[currPlayer]);
+            playerObject[currPlayer] = actionsObj.fetchPlayerData();
+            cin.get();
+            cin.get();
+            switchPlayer();
             break;
 
         case 5: //Call button pressed
-            actionsObj.callAction();
+            actionsObj.callAction(playerObject[currPlayer]);
             break;
 
         case 6: //Raise button pressed

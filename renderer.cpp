@@ -188,7 +188,7 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     cout << players[0].playerName;
     SetCursorPos(UI_PLAYER_1_TAG_POS + ((20 - to_string(players[0].money).length()) / 2), 2 + (int)players[0].isCurrentPlayer);
     cout << players[0].money << "$";
-    SetCursorPos(UI_PLAYER_1_TAG_POS + ((20 - players[0].lastPlayerAction.length()) / 2) + 1, 3 + (int)players[0].isCurrentPlayer);
+    SetCursorPos(UI_PLAYER_1_TAG_POS + ((20 - players[0].lastPlayerAction.length()) / 2), 3 + (int)players[0].isCurrentPlayer);
     cout << players[0].lastPlayerAction;
 
     //Player 2
@@ -199,7 +199,7 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     cout << players[1].playerName;
     SetCursorPos(UI_PLAYER_2_TAG_POS + ((20 - to_string(players[1].money).length()) / 2), 2 + (int)players[1].isCurrentPlayer);
     cout << players[1].money << "$";
-    SetCursorPos(UI_PLAYER_2_TAG_POS + ((20 - players[1].lastPlayerAction.length()) / 2) + 1, 3 + (int)players[1].isCurrentPlayer);
+    SetCursorPos(UI_PLAYER_2_TAG_POS + ((20 - players[1].lastPlayerAction.length()) / 2), 3 + (int)players[1].isCurrentPlayer);
     cout << players[1].lastPlayerAction;
 
     //Player 3
@@ -210,7 +210,7 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     cout << players[2].playerName;
     SetCursorPos(UI_PLAYER_3_TAG_POS + ((20 - to_string(players[2].money).length()) / 2), 2 + (int)players[2].isCurrentPlayer);
     cout << players[2].money << "$";
-    SetCursorPos(UI_PLAYER_3_TAG_POS + ((20 - players[2].lastPlayerAction.length()) / 2) + 1, 3 + (int)players[2].isCurrentPlayer);
+    SetCursorPos(UI_PLAYER_3_TAG_POS + ((20 - players[2].lastPlayerAction.length()) / 2), 3 + (int)players[2].isCurrentPlayer);
     cout << players[2].lastPlayerAction;
 
     //Player 4
@@ -221,7 +221,7 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     cout << players[3].playerName;
     SetCursorPos(UI_PLAYER_4_TAG_POS + ((20 - to_string(players[3].money).length()) / 2), 2 + (int)players[3].isCurrentPlayer);
     cout << players[3].money << "$";
-    SetCursorPos(UI_PLAYER_4_TAG_POS + ((20 - players[3].lastPlayerAction.length()) / 2) + 1, 3 + (int)players[3].isCurrentPlayer);
+    SetCursorPos(UI_PLAYER_4_TAG_POS + ((20 - players[3].lastPlayerAction.length()) / 2), 3 + (int)players[3].isCurrentPlayer);
     cout << players[3].lastPlayerAction;
 
 
