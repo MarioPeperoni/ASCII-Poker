@@ -7,6 +7,7 @@
 #include "renderer.h"
 #include "inputHandler.h"
 #include "playerData.h"
+#include "gameActions.h"
 
 using namespace std;
 
@@ -16,8 +17,10 @@ cardStruct::singleCard cardsTable[5];   //5 table cards
 inputHandlerStruct inputHandelerObj;
 cardStruct cardObj;
 rendererStruct rednererObj;
+gameActionsStruct actionsObj;
 
 int gameState = 0;  //State of the game ID (refers to no of cards on the table)
+int currPlayer = 0;
 
 int bufferIndex = 0;    //Buffer index
 bool initDefNames = true;   //Bool for creating default names for players
@@ -63,8 +66,22 @@ void createNewGame()
     generatePlayerCards();
     generateTableCards();
     bufferAll();
-    gameState = 0;
+    gameState = 0;  //0 cards at the table shown
 }
+
+void switchPlayer()
+{
+    playerObject[currPlayer].isCurrentPlayer = false;    //Set false flag on current player
+    if (currPlayer == 3) //Cycle player
+    {
+        currPlayer = -1;
+    }
+    currPlayer++;   //Go to next player index
+    playerObject[currPlayer].isCurrentPlayer = true;    //Set true flag on next player
+    rednererObj.renderPlayerChangeScreen(currPlayer);
+}
+
+void _do_nothing(){}    //Do nothing void
 
 int main()
 {
@@ -82,11 +99,12 @@ int main()
         }
     }
     playerObject[0].isCurrentPlayer = true; //Player 1 is current player
+    currPlayer = 0; //Player 1 is current player new tracker
     
     //===================================================RENDER LOOP==================================================
     while (true)    //Gameplay loop
     {
-        rednererObj.renderScreen(inputHandelerObj.cursorPos, playerObject, 1, gameState); //Render screen from buffer
+        rednererObj.renderScreen(inputHandelerObj.cursorPos, playerObject, 1, gameState, actionsObj); //Render screen from buffer
         switch (inputHandelerObj.getInput())
         {
         case 2: //M button pressed
@@ -94,16 +112,26 @@ int main()
             break;
 
         case 3: //N button pressed
-            gameState++;
+            //gameState++;    //Go to the next game stage
+            switchPlayer();
             break;
         
         case 4: //Fold button pressed
+            actionsObj.foldAction();
             break;
 
         case 5: //Call button pressed
+            actionsObj.callAction();
             break;
 
         case 6: //Raise button pressed
+            if (actionsObj.raiseAction(playerObject[currPlayer]))   //If returns without an error
+            {
+                playerObject[currPlayer] = actionsObj.fetchPlayerData();    //Update player data
+                cin.get();
+                cin.get();
+                switchPlayer();
+            }
             break;
         
         default:

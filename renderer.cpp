@@ -5,30 +5,7 @@
 #include "card.h"
 #include "inputHandler.h"
 #include "playerData.h"
-
-#define WINDOW_WIDTH 160
-#define WINDOW_HEIGHT 50
-
-#define UI_BUTTON_ROW_ID 42
-
-#define UI_BUTTON_1_START_POS 10
-#define UI_BUTTON_2_START_POS 30
-#define UI_BUTTON_3_START_POS 50
-
-#define UI_CALL_SLIDER_POS 100
-#define UI_CALL_INPUT_BOX_POS 93
-#define UI_CALL_TEXT_POS 122
-
-#define UI_PLAYER_1_TAG_POS 25
-#define UI_PLAYER_2_TAG_POS 55
-#define UI_PLAYER_3_TAG_POS 85
-#define UI_PLAYER_4_TAG_POS 115
-
-#define PLAYER_HAND_RENDER_POS_X 60
-#define PLAYER_HAND_RENDER_POS_Y 30
-
-#define TABLE_CARDS_RENDER_POS_X 35
-#define TABLE_CARDS_RENDER_POS_Y 15
+#include "gameActions.h"
 
 using namespace std;
 
@@ -116,7 +93,7 @@ void rendererStruct::bufferCard(cardStruct::Rank rank, cardStruct::Suit suit, in
     cardBuff[cardNo][10] = "╚═══════════════╝";                      //Row 11
 }
 
-void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], int currentPlayer, int gameState)
+void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], int currentPlayer, int gameState, gameActionsStruct actionObj)
 {   
     system("clear");
     //=================================================HUD=================================================
@@ -142,6 +119,12 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     {
         cout << "█";
     }
+
+    //Draw custom UI text set in actions
+    SetCursorPos(UI_BUTTON_2_START_POS, UI_BUTTON_ROW_ID - 3);
+    cout << actionObj.currentActionText;    //Draw UI text stored in action struct
+
+
     //=================================================BUTTONS=================================================
     //Draw buttons
     SetCursorPos(UI_BUTTON_1_START_POS, UI_BUTTON_ROW_ID);  
@@ -150,6 +133,8 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     cout << "CALL";
     SetCursorPos(UI_BUTTON_3_START_POS, UI_BUTTON_ROW_ID);
     cout << "RAISE";
+
+    //Call action buttons
     SetCursorPos(UI_CALL_INPUT_BOX_POS, UI_BUTTON_ROW_ID);
     cout << "▒▒▒▒▒";
     SetCursorPos(UI_CALL_SLIDER_POS, UI_BUTTON_ROW_ID);
@@ -191,6 +176,8 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
         cout << "#";
         break;
     }
+
+
     //=================================================PLAYERS=================================================
     //Draw players data on top of the screen
     //Player 1
@@ -253,4 +240,15 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     SetCursorPos(0 ,WINDOW_HEIGHT); //Reset cursor to bottom of window
     cout << " ";    //For setting max widnow height
     SetCursorPos(0 ,WINDOW_HEIGHT - 2); //Set cursor for input
+}
+
+void rendererStruct::renderPlayerChangeScreen(int currentPlayer)
+{
+    system("clear");
+    SetCursorPos((WINDOW_WIDTH/2) - 8, WINDOW_HEIGHT/2);
+    cout << "[Player " + to_string(currentPlayer + 1) + " turn]";
+    SetCursorPos((WINDOW_WIDTH/2) - 16, WINDOW_HEIGHT/2 + 1);
+    cout << "Press any button to continue...";
+    cin.get();
+    cin.get();
 }
