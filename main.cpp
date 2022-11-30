@@ -13,6 +13,7 @@ using namespace std;
 
 playerDataStruct playerObject[4];   //Player object that stores all player values
 cardStruct::singleCard cardsTable[5];   //5 table cards
+cardStruct::singleCard cardsGame[13];   //Storing all cards in game (only used for comp)
 
 inputHandlerStruct inputHandelerObj;
 cardStruct cardObj;
@@ -22,26 +23,73 @@ gameActionsStruct actionsObj;
 int gameState = 0;  //State of the game ID (refers to no of cards on the table)
 int currPlayer = 0;
 
+int cardsGenerated = 0; //Index for generated cards (used for comp)
 int bufferIndex = 0;    //Buffer index
 bool initDefNames = true;   //Bool for creating default names for players
 
-void generatePlayerCards()
+bool checkIfCardValid(bool isTable, int playerID, int cardID)
 {
-    for (int i = 0; i < 4; i++) //Generate cards for players
+    for (int i = 0; i < cardsGenerated + 1; i++)
     {
-        playerObject[i].playerHand[0].rank = (cardStruct::Rank)((rand() % 12) + 1); //Adds +1 for index 2-13
-        playerObject[i].playerHand[0].suit = (cardStruct::Suit)((rand() % 4) + 3);
-        playerObject[i].playerHand[1].rank = (cardStruct::Rank)((rand() % 12) + 1);
-        playerObject[i].playerHand[1].suit = (cardStruct::Suit)((rand() % 4) + 3);
+        if (isTable)
+        {
+            if (cardsTable[cardID].rank == cardsGame[i].rank && cardsTable[cardID].suit == cardsGame[i].suit)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (playerObject[playerID].playerHand[cardID].rank == cardsGame[i].rank && playerObject[playerID].playerHand[cardID].suit == cardsGame[i].suit)
+            {
+                return false;
+            }
+        }
     }
+    return true;
+}
+
+void generatePlayerCards(int playerID)
+{
+    //Generate 1st card for player
+    generate1stCardLabel:
+    playerObject[playerID].playerHand[0].rank = (cardStruct::Rank)((rand() % 12) + 1);
+    playerObject[playerID].playerHand[0].suit = (cardStruct::Suit)((rand() % 4) + 3);
+    if (!checkIfCardValid(false, playerID, 0))  //If card is valid
+    {
+       goto generate1stCardLabel;   ////Try generating agiain
+    }
+    cardsGame[cardsGenerated].rank = playerObject[playerID].playerHand[0].rank; //Add valid generated card to game deck
+    cardsGame[cardsGenerated].suit = playerObject[playerID].playerHand[0].suit;
+    cardsGenerated++;   //Move index of cardsGame
+
+    //Generate 2nd card for player
+    generate2ndCardLabel:
+    playerObject[playerID].playerHand[1].rank = (cardStruct::Rank)((rand() % 12) + 1);
+    playerObject[playerID].playerHand[1].suit = (cardStruct::Suit)((rand() % 4) + 3);
+    if (!checkIfCardValid(false, playerID, 1))  //If card is valid
+    {
+       goto generate2ndCardLabel;   //Try generating agiain
+    }
+    cardsGame[cardsGenerated].rank = playerObject[playerID].playerHand[1].rank; //Add valid generated card to game deck
+    cardsGame[cardsGenerated].suit = playerObject[playerID].playerHand[1].suit;
+    cardsGenerated++;   //Move index of cardsGame
 }
 
 void generateTableCards()
 {
     for (int i = 0; i < 5; i++)  //Generate cards at the table
     {
+        generateTableCardAgainLabel:
         cardsTable[i].rank = (cardStruct::Rank)((rand() % 12) + 1);
         cardsTable[i].suit = (cardStruct::Suit)((rand() % 4) + 3);
+        if (!checkIfCardValid(true, 0, i))  //If card is valid
+        {
+            goto generateTableCardAgainLabel;   //Try again
+        }
+        cardsGame[cardsGenerated].rank = cardsTable[i].rank;    //Add valid generated card to game deck
+        cardsGame[cardsGenerated].suit = cardsTable[i].suit;
+        cardsGenerated++;   //Move index of cardsGame
     }
 }
 
@@ -63,9 +111,13 @@ void bufferAll()
 
 void createNewGame()
 {
-    generatePlayerCards();
-    generateTableCards();
-    bufferAll();
+    cardsGenerated = 0; //Prepare to generate new set of cards
+    generateTableCards();   //Generate cards at the table
+    for (int i = 0; i < 4; i++)
+    {
+        generatePlayerCards(i); //Generate cards for eatch player
+    }
+    bufferAll();    //Buffer all cards (player and table)
     gameState = 0;  //0 cards at the table shown
 }
 
@@ -87,9 +139,7 @@ int main()
 {
     //=====================================================GAME INIT====================================================
     srand(time(0)); //Set seed of randomizer for current time
-    generatePlayerCards();    //Generate cards for players
-    generateTableCards();   //Generate cards at the table
-    bufferAll();    //Buffer all cards (player and table)
+    createNewGame();
 
     if (initDefNames)   //Set default player names "Player (no)"
     {
@@ -99,7 +149,7 @@ int main()
         }
     }
     playerObject[0].isCurrentPlayer = true; //Player 1 is current player
-    currPlayer = 0; //Player 1 is current player new tracker
+    currPlayer = 0; //Player 1 is current player (new tracker)
     
     //===================================================RENDER LOOP==================================================
     while (true)    //Gameplay loop
@@ -108,11 +158,10 @@ int main()
         switch (inputHandelerObj.getInput())
         {
         case 2: //M button pressed
-            gameState++;
+            gameState++;    //Go to the next game stage
             break;
 
         case 3: //N button pressed
-            //gameState++;    //Go to the next game stage
             switchPlayer();
             break;
         
