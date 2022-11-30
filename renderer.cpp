@@ -93,7 +93,7 @@ void rendererStruct::bufferCard(cardStruct::Rank rank, cardStruct::Suit suit, in
     cardBuff[cardNo][10] = "╚═══════════════╝";                      //Row 11
 }
 
-void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], int currentPlayer, int gameState, gameActionsStruct actionObj)
+void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], int currentPlayer, gameActionsStruct gameActionsObj, gameActionsStruct actionObj)
 {   
     system("clear");
     //=================================================HUD=================================================
@@ -120,9 +120,21 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
         cout << "█";
     }
 
+    //===============================================POP TEXT===================================================
     //Draw custom UI text set in actions
     SetCursorPos(UI_BUTTON_2_START_POS, UI_BUTTON_ROW_ID - 3);
     cout << actionObj.currentActionText;    //Draw UI text stored in action struct
+
+    //Draw custom UI center screen pop up
+    if (actionObj.bigActionText != "")  //Draw border for text if text is filled
+    {
+        SetCursorPos(0, 8);
+        for (int i = 0; i < WINDOW_WIDTH; i++) {cout << "=";}   //Draw border
+        SetCursorPos(0, 10);
+        for (int i = 0; i < WINDOW_WIDTH; i++) {cout << "=";}   //Draw border
+    }
+    SetCursorPos((WINDOW_WIDTH/2) - (actionObj.bigActionText.length() / 2) - 3, 9); //Draw text
+    cout << actionObj.bigActionText;    //Draw UI center text from action struct
 
 
     //=================================================BUTTONS=================================================
@@ -226,14 +238,14 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
 
 
     //================================================TABLE=================================================
-    SetCursorPos(((WINDOW_WIDTH / 2) - 12) - (8 * (gameState - 1)), TABLE_CARDS_RENDER_POS_Y); //Draws table cards
+    SetCursorPos(((WINDOW_WIDTH / 2) - 12) - (8 * (actionObj.gameState - 1)), TABLE_CARDS_RENDER_POS_Y); //Draws table cards
     for (int i = -1; i < 11; i++)    //Size of card is 11 rows
     {
-        for (int j = 0; j < gameState; j++) //Table cards index
+        for (int j = 0; j < actionObj.gameState; j++) //Table cards index
         {
             cout << cardBuff[j][i];
         }
-        SetCursorPos(((WINDOW_WIDTH / 2) - 12) - (8 * (gameState - 1)), TABLE_CARDS_RENDER_POS_Y + i);
+        SetCursorPos(((WINDOW_WIDTH / 2) - 12) - (8 * (actionObj.gameState - 1)), TABLE_CARDS_RENDER_POS_Y + i);
     }
     SetCursorPos(PLAYER_HAND_RENDER_POS_X, PLAYER_HAND_RENDER_POS_Y);
     for (int i = -1; i < 11; i++)    //Size of card is 11 rows

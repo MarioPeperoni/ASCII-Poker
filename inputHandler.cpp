@@ -6,17 +6,6 @@
 
 using namespace std;
 
-/*
-RETURN CODES:
-0 - Succesfully registerd key press
-1 - Error
-2 - Start new game trigger
-3 - Next game stage trigger
-4 - Fold button pressed trigger
-5 - Call button pressed trigger
-6 - Raise button pressed trigger
-*/
-
 int inputHandlerStruct::getInput()
 {
     string input;   //String storing input from keyboard
@@ -47,12 +36,18 @@ int inputHandlerStruct::getInput()
         return 0;
         break;
 
-    case 'm':   //New game button trigger
+    case '1':   //DEBUG 1: Inc Game state
         return 2;
     
-    case 'n':   //Next game stage button trigger
+    case '2':   //DEBUG 2: Player switch
         return 3;
     
+    case '3':   //DEBUG 3: Next turn
+        return 7;
+
+    case '4':   //DEBUG 4: New game
+        return 8;
+
     case 'p':
         switch (inputHandlerStruct::cursorPos)
         {

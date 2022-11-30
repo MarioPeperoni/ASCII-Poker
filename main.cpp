@@ -20,7 +20,6 @@ cardStruct cardObj;
 rendererStruct rednererObj;
 gameActionsStruct actionsObj;
 
-int gameState = 0;  //State of the game ID (refers to no of cards on the table)
 int currPlayer = 0;
 
 int cardsGenerated = 0; //Index for generated cards (used for comp)
@@ -118,7 +117,28 @@ void createNewGame()
         generatePlayerCards(i); //Generate cards for eatch player
     }
     bufferAll();    //Buffer all cards (player and table)
-    gameState = 0;  //0 cards at the table shown
+    actionsObj.gameState = 0;  //0 cards at the table shown
+    actionsObj.currentHiBlind = actionsObj.checkBlinds(actionsObj.turnsPlayed); //Set blinds
+    actionsObj.currentPot = 0;  //Set current pot for 0$
+
+    //=================================================SET BLINDS=================================================
+    //Set index for big blind player
+    actionsObj.currentBigBlindPlayer == 3 ? actionsObj.currentBigBlindPlayer = 0 : actionsObj.currentBigBlindPlayer++;   //Go to the next index
+    while (!playerObject[actionsObj.currentBigBlindPlayer].inGame == false)  //If player is still playing
+    {
+        actionsObj.currentBigBlindPlayer == 3 ? actionsObj.currentBigBlindPlayer = 0 : actionsObj.currentBigBlindPlayer++;   //Go to the next index
+    }    
+
+    //Set index for small blind player
+    actionsObj.currentSmallBlindPlayer == 3 ? actionsObj.currentSmallBlindPlayer = 0 : actionsObj.currentSmallBlindPlayer++;   //Go to the next index
+    while (!playerObject[actionsObj.currentSmallBlindPlayer].inGame == false)  //If player is still playing
+    {
+        actionsObj.currentSmallBlindPlayer == 3 ? actionsObj.currentSmallBlindPlayer = 0 : actionsObj.currentSmallBlindPlayer++;   //Go to the next index
+    }
+    actionsObj.takeBlinds(playerObject[actionsObj.currentSmallBlindPlayer], playerObject[actionsObj.currentBigBlindPlayer]);    //Take money for blinds from player
+
+    playerObject[actionsObj.currentSmallBlindPlayer] = actionsObj.fetchPlayerData(0);   //Upodate player data
+    playerObject[actionsObj.currentBigBlindPlayer] = actionsObj.fetchPlayerData(1); //Update player data
 }
 
 void switchPlayer()
@@ -139,6 +159,8 @@ int main()
 {
     //=====================================================GAME INIT====================================================
     srand(time(0)); //Set seed of randomizer for current time
+    actionsObj.currentBigBlindPlayer = 0;
+    actionsObj.currentSmallBlindPlayer = -1;
     createNewGame();
 
     if (initDefNames)   //Set default player names "Player (no)"
@@ -154,15 +176,24 @@ int main()
     //===================================================RENDER LOOP==================================================
     while (true)    //Gameplay loop
     {
-        rednererObj.renderScreen(inputHandelerObj.cursorPos, playerObject, currPlayer, gameState, actionsObj); //Render screen from buffer
+        rednererObj.renderScreen(inputHandelerObj.cursorPos, playerObject, currPlayer, actionsObj, actionsObj); //Render screen from buffer
         switch (inputHandelerObj.getInput())
         {
-        case 2: //M button pressed
-            gameState++;    //Go to the next game stage
+        case 2: //DEBUG 1: Inc Game state
+            actionsObj.gameState++;    //Go to the next game stage
             break;
 
-        case 3: //N button pressed
+        case 3: //DEBUG 2: Player switch
             switchPlayer();
+            break;
+
+        case 7: //DEBUG 3: Next turn
+            actionsObj.turnsPlayed++;
+            actionsObj.currentHiBlind = actionsObj.checkBlinds(actionsObj.turnsPlayed);
+            break;
+        
+        case 8: //DEBUG 4: New game
+            createNewGame();
             break;
         
         case 4: //Fold button pressed
