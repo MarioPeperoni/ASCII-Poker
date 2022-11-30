@@ -110,6 +110,7 @@ void gameActionsStruct::takeBlinds(playerDataStruct smallBlindPlayer, playerData
 {
     smallBlindPlayer.money -= (currentHiBlind / 2);
     bigBlindPlayer.money -= currentHiBlind;
+    gameActionsStruct::currentPot += (currentHiBlind / 2) + currentHiBlind;
     fetchedPlayerObj[0] = smallBlindPlayer;
     fetchedPlayerObj[1] = bigBlindPlayer;
 } 

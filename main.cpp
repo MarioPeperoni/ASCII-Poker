@@ -176,7 +176,7 @@ int main()
     //===================================================RENDER LOOP==================================================
     while (true)    //Gameplay loop
     {
-        rednererObj.renderScreen(inputHandelerObj.cursorPos, playerObject, currPlayer, actionsObj, actionsObj); //Render screen from buffer
+        rednererObj.renderScreen(inputHandelerObj.cursorPos, playerObject, currPlayer, actionsObj); //Render screen from buffer
         switch (inputHandelerObj.getInput())
         {
         case 2: //DEBUG 1: Inc Game state

@@ -93,7 +93,7 @@ void rendererStruct::bufferCard(cardStruct::Rank rank, cardStruct::Suit suit, in
     cardBuff[cardNo][10] = "╚═══════════════╝";                      //Row 11
 }
 
-void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], int currentPlayer, gameActionsStruct gameActionsObj, gameActionsStruct actionObj)
+void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], int currentPlayer, gameActionsStruct actionObj)
 {   
     system("clear");
     //=================================================HUD=================================================
@@ -108,7 +108,7 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
 
     //Draws down UI Bar
     SetCursorPos(3,38);
-    cout << "Current Pot: 100000$";
+    cout << "Current Pot: " + to_string(actionObj.currentPot) + "$";
     SetCursorPos(0,40);
     for (int i = 0; i < WINDOW_WIDTH; i++)
     {
