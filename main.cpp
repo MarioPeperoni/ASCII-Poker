@@ -2,12 +2,15 @@
 #include <random>
 #include <time.h>
 #include <curses.h>
+#include <unistd.h>
 
 #include "card.h"
 #include "renderer.h"
 #include "inputHandler.h"
 #include "playerData.h"
 #include "gameActions.h"
+
+#define WAIT_TIME_BETWEEN_ACTIONS 1
 
 using namespace std;
 
@@ -208,22 +211,23 @@ int main()
         case 4: //Fold button pressed
             actionsObj.foldAction(playerObject[currPlayer]);
             playerObject[currPlayer] = actionsObj.fetchPlayerData();
-            cin.get();
-            cin.get();
+            sleep(WAIT_TIME_BETWEEN_ACTIONS);
             switchPlayer(true);
             break;
 
         case 5: //Call or check button pressed
         if (actionsObj.highestCall - playerObject[currPlayer].moneyPut == 0)    //If checking for call or check
         {
-            _do_nothing();
+            actionsObj.checkAction(playerObject[currPlayer]);
+            playerObject[currPlayer] = actionsObj.fetchPlayerData();
+            sleep(WAIT_TIME_BETWEEN_ACTIONS);
+
         }
         else
         {
             actionsObj.callAction(playerObject[currPlayer]);
             playerObject[currPlayer] = actionsObj.fetchPlayerData();
-            cin.get();
-            cin.get();
+            sleep(WAIT_TIME_BETWEEN_ACTIONS);
         }
         switchPlayer(true);
         break;
@@ -232,8 +236,7 @@ int main()
             if (actionsObj.raiseAction(playerObject[currPlayer]))   //If returns without an error
             {
                 playerObject[currPlayer] = actionsObj.fetchPlayerData();    //Update player data
-                cin.get();
-                cin.get();
+                sleep(WAIT_TIME_BETWEEN_ACTIONS);
                 switchPlayer(true);
             }
             break;

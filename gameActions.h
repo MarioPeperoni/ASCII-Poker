@@ -23,6 +23,7 @@ struct gameActionsStruct
     int currentBigBlindPlayer;
     int currentSmallBlindPlayer;
 
+    bool checkAction(playerDataStruct playerObj);   //Call check action
     bool foldAction(playerDataStruct playerObj);    //Call fold cation on player
     bool callAction(playerDataStruct playerObj);    //Calls call action on player
     bool raiseAction(playerDataStruct playerObj);   //Calls raise action on player

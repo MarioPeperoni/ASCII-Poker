@@ -16,12 +16,20 @@ bool gameActionsStruct::foldAction(playerDataStruct playerObj)
     return true;
 }
 
+bool gameActionsStruct::checkAction(playerDataStruct playerObj)
+{
+    playerObj.lastPlayerAction = "Checked";  //Set player last action string
+    fetchedPlayerObj[0] = playerObj; //Copy contents of playerObj to fetchedPlayerObj
+    return true;
+}
+
 bool gameActionsStruct::callAction(playerDataStruct playerObj)
 {
-    playerObj.money -= gameActionsStruct::highestCall;
-    playerObj.moneyPut += gameActionsStruct::highestCall;
+    playerObj.money -= gameActionsStruct::highestCall - playerObj.moneyPut;
+    playerObj.moneyPut += gameActionsStruct::highestCall - playerObj.moneyPut;
     gameActionsStruct::currentPot += gameActionsStruct::highestCall;    //Increase current pot call value
     gameActionsStruct::currentActionText = "Called";    //Set action text
+    playerObj.lastPlayerAction = "Called"; //Set player last action string
     fetchedPlayerObj[0] = playerObj;
     return false;
 }
@@ -34,16 +42,15 @@ bool gameActionsStruct::raiseAction(playerDataStruct playerObj)
     std::cin >> raisedMoney;
     if (raisedMoney + highestCall > playerObj.money)  //If player do not have enough money in balance
     {
-        rendererObj.SetCursorPos(UI_CALL_INPUT_BOX_POS_X, UI_CALL_INPUT_BOX_POS_Y);  //Cursor positon set to call input box
         gameActionsStruct::currentActionText = "Raise too big. Try again...";
         return false;   //Action not finished
     }
     gameActionsStruct::currentActionText = "Raised " + std::to_string(raisedMoney + highestCall) + "$";
-    playerObj.money -= raisedMoney + highestCall; //Subtract raised moeny from player balance
-    gameActionsStruct::currentPot += raisedMoney + highestCall;   //Add money to pot
-    playerObj.lastPlayerAction = "Raised " + std::to_string(raisedMoney + highestCall) + "$"; //Set player last action string
+    playerObj.money -= raisedMoney; //Subtract raised moeny from player balance
+    gameActionsStruct::currentPot += raisedMoney;   //Add money to pot
+    playerObj.lastPlayerAction = "Raised " + std::to_string(raisedMoney) + "$"; //Set player last action string
     highestCall += raisedMoney; //Add raise value to highest call
-    playerObj.moneyPut += highestCall;  //Add raise value to money put in pot
+    playerObj.moneyPut += raisedMoney;  //Add raise value to money put in pot
     fetchedPlayerObj[0] = playerObj;   //Copy contents of playerObj to fetchedPlayerObj
     return true;    //Action finished succesfully
 }
@@ -119,7 +126,7 @@ void gameActionsStruct::takeBlinds(playerDataStruct smallBlindPlayer, playerData
     smallBlindPlayer.money -= (currentHiBlind / 2); //Small blind is hi blind value / 2
     bigBlindPlayer.money -= currentHiBlind;
     gameActionsStruct::currentPot += (currentHiBlind / 2) + currentHiBlind; //Add blinds to pot value
-    gameActionsStruct::highestCall = currentHiBlind;    //Set inital call value to hi blind
+    gameActionsStruct::highestCall = currentHiBlind + (currentHiBlind / 2);    //Set inital call value to hi blind
     smallBlindPlayer.moneyPut = (currentHiBlind / 2);
     bigBlindPlayer.moneyPut = currentHiBlind;
     fetchedPlayerObj[0] = smallBlindPlayer; //Fetch small blind player data
@@ -141,9 +148,6 @@ playerDataStruct gameActionsStruct::fetchPlayerData(int indexInMem)   //Send pla
     
     case 1:
         return fetchedPlayerObj[1];
-        break;
-    
-    default:
         break;
     }
     return fetchedPlayerObj[0];
