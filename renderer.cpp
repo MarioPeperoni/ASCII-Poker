@@ -157,7 +157,7 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     SetCursorPos(UI_BUTTON_2_START_POS, UI_BUTTON_ROW_ID);
     actionObj.highestCall - players[currentPlayer].moneyPut == 0 ? cout << "CHECK" : cout << "CALL";
     SetCursorPos(UI_BUTTON_3_START_POS, UI_BUTTON_ROW_ID);
-    cout << "RAISE";
+    actionObj.highestCall - players[currentPlayer].moneyPut == 0 ? cout << "BID" : cout << "RAISE";
 
     //Draw graphic representation of selected button
     switch (cursorPos)

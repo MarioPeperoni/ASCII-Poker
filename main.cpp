@@ -216,32 +216,40 @@ int main()
             break;
 
         case 5: //Call or check button pressed
-        if (actionsObj.highestCall - playerObject[currPlayer].moneyPut == 0)    //If checking for call or check
-        {
-            actionsObj.checkAction(playerObject[currPlayer]);
-            playerObject[currPlayer] = actionsObj.fetchPlayerData();
-            sleep(WAIT_TIME_BETWEEN_ACTIONS);
-
-        }
-        else
-        {
-            actionsObj.callAction(playerObject[currPlayer]);
-            playerObject[currPlayer] = actionsObj.fetchPlayerData();
-            sleep(WAIT_TIME_BETWEEN_ACTIONS);
-        }
+            if (actionsObj.highestCall - playerObject[currPlayer].moneyPut == 0)    //If checking for call or check
+            {
+                actionsObj.checkAction(playerObject[currPlayer]);
+                playerObject[currPlayer] = actionsObj.fetchPlayerData();
+                sleep(WAIT_TIME_BETWEEN_ACTIONS);
+            }
+            else
+            {
+                actionsObj.callAction(playerObject[currPlayer]);
+                playerObject[currPlayer] = actionsObj.fetchPlayerData();
+                sleep(WAIT_TIME_BETWEEN_ACTIONS);
+            }
         switchPlayer(true);
         break;
 
         case 6: //Raise button pressed
-            if (actionsObj.raiseAction(playerObject[currPlayer]))   //If returns without an error
+            if (actionsObj.highestCall - playerObject[currPlayer].moneyPut == 0)    //If checking for bid or raise
             {
-                playerObject[currPlayer] = actionsObj.fetchPlayerData();    //Update player data
-                sleep(WAIT_TIME_BETWEEN_ACTIONS);
-                switchPlayer(true);
+                if (actionsObj.bidAction(playerObject[currPlayer]))   //If returns without an error
+                {
+                    playerObject[currPlayer] = actionsObj.fetchPlayerData();    //Update player data
+                    sleep(WAIT_TIME_BETWEEN_ACTIONS);
+                    switchPlayer(true);
+                }
             }
-            break;
-        
-        default:
+            else
+            {
+                if (actionsObj.raiseAction(playerObject[currPlayer]))   //If returns without an error
+                {
+                    playerObject[currPlayer] = actionsObj.fetchPlayerData();    //Update player data
+                    sleep(WAIT_TIME_BETWEEN_ACTIONS);
+                    switchPlayer(true);
+                }
+            }
             break;
         }
     }

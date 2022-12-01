@@ -27,6 +27,7 @@ struct gameActionsStruct
     bool foldAction(playerDataStruct playerObj);    //Call fold cation on player
     bool callAction(playerDataStruct playerObj);    //Calls call action on player
     bool raiseAction(playerDataStruct playerObj);   //Calls raise action on player
+    bool bidAction(playerDataStruct playerObj);     //Calls bid action on player
 
     playerDataStruct fetchPlayerData();
     playerDataStruct fetchPlayerData(int indexInMem);

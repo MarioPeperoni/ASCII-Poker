@@ -40,15 +40,36 @@ bool gameActionsStruct::raiseAction(playerDataStruct playerObj)
     rendererObj.SetCursorPos(UI_CALL_INPUT_BOX_POS_X, UI_CALL_INPUT_BOX_POS_Y);  //Cursor positon set to call input box
     gameActionsStruct::currentActionText = "Insert raise value...";
     std::cin >> raisedMoney;
-    if (raisedMoney + highestCall > playerObj.money)  //If player do not have enough money in balance
+    if ((raisedMoney + highestCall) > playerObj.money)  //If player do not have enough money in balance
     {
         gameActionsStruct::currentActionText = "Raise too big. Try again...";
         return false;   //Action not finished
     }
-    gameActionsStruct::currentActionText = "Raised " + std::to_string(raisedMoney + highestCall) + "$";
+    highestCall += raisedMoney; //Add raise value to highest call
+    playerObj.moneyPut += highestCall;  //Add raise value to money put in pot
+    gameActionsStruct::currentActionText = "Raised " + std::to_string(highestCall) + "$";
+    playerObj.money -= (highestCall); //Subtract raised moeny from player balance
+    gameActionsStruct::currentPot += highestCall;   //Add money to pot
+    playerObj.lastPlayerAction = "Raised " + std::to_string(highestCall) + "$"; //Set player last action string
+    fetchedPlayerObj[0] = playerObj;   //Copy contents of playerObj to fetchedPlayerObj
+    return true;    //Action finished succesfully
+}
+
+bool gameActionsStruct::bidAction(playerDataStruct playerObj)
+{
+    int raisedMoney;    //Money inputed from player
+    rendererObj.SetCursorPos(UI_CALL_INPUT_BOX_POS_X, UI_CALL_INPUT_BOX_POS_Y);  //Cursor positon set to call input box
+    gameActionsStruct::currentActionText = "Insert bid value...";
+    std::cin >> raisedMoney;
+    if (raisedMoney > playerObj.money)  //If player do not have enough money in balance
+    {
+        gameActionsStruct::currentActionText = "Bid too big. Try again...";
+        return false;   //Action not finished
+    }
+    gameActionsStruct::currentActionText = "Bidded " + std::to_string(raisedMoney) + "$";
     playerObj.money -= raisedMoney; //Subtract raised moeny from player balance
     gameActionsStruct::currentPot += raisedMoney;   //Add money to pot
-    playerObj.lastPlayerAction = "Raised " + std::to_string(raisedMoney) + "$"; //Set player last action string
+    playerObj.lastPlayerAction = "Bidded " + std::to_string(raisedMoney) + "$"; //Set player last action string
     highestCall += raisedMoney; //Add raise value to highest call
     playerObj.moneyPut += raisedMoney;  //Add raise value to money put in pot
     fetchedPlayerObj[0] = playerObj;   //Copy contents of playerObj to fetchedPlayerObj
