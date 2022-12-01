@@ -141,7 +141,9 @@ void createNewGame()
     playerObject[actionsObj.currentBigBlindPlayer] = actionsObj.fetchPlayerData(1); //Update player data
 }
 
-void switchPlayer()
+void _do_nothing(){}    //Do nothing void
+
+void switchPlayer(bool playerChangeScreen)
 {
     playerObject[currPlayer].isCurrentPlayer = false;    //Set false flag on current player
     if (currPlayer == 3) //Cycle player
@@ -150,17 +152,26 @@ void switchPlayer()
     }
     currPlayer++;   //Go to next player index
     playerObject[currPlayer].isCurrentPlayer = true;    //Set true flag on next player
-    playerObject[currPlayer].folded ? switchPlayer() : rednererObj.renderPlayerChangeScreen(currPlayer);    //Check if player fold
+    if (playerChangeScreen)
+    {
+        playerObject[currPlayer].folded ? switchPlayer(true) : rednererObj.renderPlayerChangeScreen(currPlayer);    //Check if player fold
+        playerObject[currPlayer].inGame ? switchPlayer(true) : rednererObj.renderPlayerChangeScreen(currPlayer);    //Check if is still in game
+    }
+    
+    playerObject[currPlayer].folded ? switchPlayer(true) : _do_nothing();    //Check if player fold
+    playerObject[currPlayer].inGame ? switchPlayer(true) : _do_nothing();    //Check if is still in game
 }
-
-void _do_nothing(){}    //Do nothing void
 
 int main()
 {
     //=====================================================GAME INIT====================================================
     srand(time(0)); //Set seed of randomizer for current time
-    actionsObj.currentBigBlindPlayer = 0;
-    actionsObj.currentSmallBlindPlayer = -1;
+    actionsObj.currentBigBlindPlayer = rand() % 4;
+    actionsObj.currentSmallBlindPlayer = actionsObj.currentBigBlindPlayer - 1;
+    playerObject[actionsObj.currentBigBlindPlayer].isCurrentPlayer = true; //Player 1 is current player
+    currPlayer = actionsObj.currentBigBlindPlayer ; //Player 1 is current player (new tracker)
+    switchPlayer(false);
+    switchPlayer(true);
     createNewGame();
 
     if (initDefNames)   //Set default player names "Player (no)"
@@ -170,8 +181,6 @@ int main()
             playerObject[i].playerName = "Player " + to_string(i + 1);
         }
     }
-    playerObject[0].isCurrentPlayer = true; //Player 1 is current player
-    currPlayer = 0; //Player 1 is current player (new tracker)
     
     //===================================================RENDER LOOP==================================================
     while (true)    //Gameplay loop
@@ -184,7 +193,7 @@ int main()
             break;
 
         case 3: //DEBUG 2: Player switch
-            switchPlayer();
+            switchPlayer(true);
             break;
 
         case 7: //DEBUG 3: Next turn
@@ -201,12 +210,23 @@ int main()
             playerObject[currPlayer] = actionsObj.fetchPlayerData();
             cin.get();
             cin.get();
-            switchPlayer();
+            switchPlayer(true);
             break;
 
-        case 5: //Call button pressed
+        case 5: //Call or check button pressed
+        if (actionsObj.highestCall - playerObject[currPlayer].moneyPut == 0)    //If checking for call or check
+        {
+            _do_nothing();
+        }
+        else
+        {
             actionsObj.callAction(playerObject[currPlayer]);
-            break;
+            playerObject[currPlayer] = actionsObj.fetchPlayerData();
+            cin.get();
+            cin.get();
+        }
+        switchPlayer(true);
+        break;
 
         case 6: //Raise button pressed
             if (actionsObj.raiseAction(playerObject[currPlayer]))   //If returns without an error
@@ -214,7 +234,7 @@ int main()
                 playerObject[currPlayer] = actionsObj.fetchPlayerData();    //Update player data
                 cin.get();
                 cin.get();
-                switchPlayer();
+                switchPlayer(true);
             }
             break;
         

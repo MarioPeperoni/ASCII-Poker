@@ -14,10 +14,12 @@ struct gameActionsStruct
     int gameState;  //State of the game ID (refers to no of cards on the table)
     int turnsPlayed = 0;    //Number of turns played
     int currentPot; //Value of current pot
+    
+    int highestCall;    //Highest call in the game
 
     int currentHiBlind;   //Current hi blind values
     int checkBlinds(int turnsPlayed);
-    void takeBlinds(playerDataStruct smallBlindPlayer, playerDataStruct bigBlindPlayer);
+    void takeBlinds(playerDataStruct smallBlindPlayer, playerDataStruct bigBlindPlayer);    //Take blind money from players
     int currentBigBlindPlayer;
     int currentSmallBlindPlayer;
 

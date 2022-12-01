@@ -97,18 +97,22 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
 {   
     system("clear");
     //=================================================HUD=================================================
-    //Draw HUD Frame
+
+
+    //Draw pot value frame
     SetCursorPos(0,36);
-    cout << "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓";
+    cout << "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓";
     for (int i = 37; i < 41; i++)
     {
-        SetCursorPos(26,i);
+        SetCursorPos(23,i);
         cout << "█";
     }
 
     //Draws down UI Bar
     SetCursorPos(3,38);
-    cout << "Current Pot: " + to_string(actionObj.currentPot) + "$";
+    cout << "Current Pot: " + to_string(actionObj.currentPot) + "$";    //Prints current pot value
+
+    //Bottom bars
     SetCursorPos(0,40);
     for (int i = 0; i < WINDOW_WIDTH; i++)
     {
@@ -121,9 +125,10 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     }
 
     //===============================================POP TEXT===================================================
-    //Draw custom UI text set in actions
-    SetCursorPos(UI_BUTTON_2_START_POS, UI_BUTTON_ROW_ID - 3);
-    cout << actionObj.currentActionText;    //Draw UI text stored in action struct
+
+    //Last action text
+    SetCursorPos(UI_CALL_SLIDER_POS, UI_BUTTON_ROW_ID);
+    cout << "This is the temp pace for hi card";
 
     //Draw custom UI center screen pop up
     if (actionObj.bigActionText != "")  //Draw border for text if text is filled
@@ -142,17 +147,13 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     SetCursorPos(UI_BUTTON_1_START_POS, UI_BUTTON_ROW_ID);  
     cout << "FOLD";
     SetCursorPos(UI_BUTTON_2_START_POS, UI_BUTTON_ROW_ID);
-    cout << "CALL";
+    actionObj.highestCall - players[currentPlayer].moneyPut == 0 ? cout << "CHECK" : cout << "CALL";
     SetCursorPos(UI_BUTTON_3_START_POS, UI_BUTTON_ROW_ID);
     cout << "RAISE";
 
     //Call action buttons
     SetCursorPos(UI_CALL_INPUT_BOX_POS, UI_BUTTON_ROW_ID);
     cout << "▒▒▒▒▒";
-    SetCursorPos(UI_CALL_SLIDER_POS, UI_BUTTON_ROW_ID);
-    cout << "----------#---------";
-    SetCursorPos(UI_CALL_TEXT_POS, UI_BUTTON_ROW_ID);
-    cout << "ALL-IN";
 
     //Draw graphic representation of selected button
     switch (cursorPos)
@@ -176,6 +177,17 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
         cout << "#";
         SetCursorPos(UI_BUTTON_2_START_POS + 10, UI_BUTTON_ROW_ID);
         cout << "#";
+
+        //Draw call button money value frame
+        SetCursorPos(UI_BUTTON_2_START_POS - 3, UI_BUTTON_ROW_ID - 3);
+        cout << "║";
+        SetCursorPos(UI_BUTTON_2_START_POS + 6, UI_BUTTON_ROW_ID - 3);
+        cout << "║";
+        SetCursorPos(UI_BUTTON_2_START_POS - 3, UI_BUTTON_ROW_ID - 4);
+        cout << "╔════════╗";
+        SetCursorPos((UI_BUTTON_2_START_POS - 2) - ((to_string(actionObj.highestCall).length() + 1) / 2) + 4, UI_BUTTON_ROW_ID - 3);
+        cout << to_string(actionObj.highestCall - players[currentPlayer].moneyPut) + "$";   //Draw call value
+
         break;
     case 3:
         SetCursorPos(UI_BUTTON_3_START_POS - 7, UI_BUTTON_ROW_ID - 1);
@@ -237,7 +249,7 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     cout << players[3].lastPlayerAction;
 
 
-    //================================================TABLE=================================================
+    //================================================BUFFER CARDS=================================================
     SetCursorPos(((WINDOW_WIDTH / 2) - 12) - (8 * (actionObj.gameState - 1)), TABLE_CARDS_RENDER_POS_Y); //Draws table cards
     for (int i = -1; i < 11; i++)    //Size of card is 11 rows
     {
