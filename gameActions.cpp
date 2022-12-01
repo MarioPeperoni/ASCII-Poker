@@ -29,12 +29,12 @@ bool gameActionsStruct::callAction(playerDataStruct playerObj)
 bool gameActionsStruct::raiseAction(playerDataStruct playerObj)
 {
     int raisedMoney;    //Money inputed from player
-    rendererObj.SetCursorPos(UI_CALL_INPUT_BOX_POS, UI_BUTTON_ROW_ID);  //Cursor positon set to call input box
+    rendererObj.SetCursorPos(UI_CALL_INPUT_BOX_POS_X, UI_CALL_INPUT_BOX_POS_Y);  //Cursor positon set to call input box
     gameActionsStruct::currentActionText = "Insert raise value...";
     std::cin >> raisedMoney;
     if (raisedMoney + highestCall > playerObj.money)  //If player do not have enough money in balance
     {
-        rendererObj.SetCursorPos(UI_CALL_INPUT_BOX_POS, UI_BUTTON_ROW_ID);  //Cursor positon set to call input box
+        rendererObj.SetCursorPos(UI_CALL_INPUT_BOX_POS_X, UI_CALL_INPUT_BOX_POS_Y);  //Cursor positon set to call input box
         gameActionsStruct::currentActionText = "Raise too big. Try again...";
         return false;   //Action not finished
     }

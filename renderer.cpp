@@ -93,23 +93,31 @@ void rendererStruct::bufferCard(cardStruct::Rank rank, cardStruct::Suit suit, in
     cardBuff[cardNo][10] = "╚═══════════════╝";                      //Row 11
 }
 
+void rendererStruct::drawPotGraphics()
+{
+    //Rozpoczyna od 3, 12
+    //Wymiar 60 x 24
+    SetCursorPos(G_POT_START_POS_X, G_POT_START_POS_Y);
+    for (int i = 0; i < G_POT_HEIGHT; i++)
+    {
+        for (int j = 0; j < G_POT_WIDTH; j++)
+        {
+            cout << "░";
+        }
+        SetCursorPos(G_POT_START_POS_X, G_POT_START_POS_Y + i);
+    }
+    
+    
+}
+
 void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], int currentPlayer, gameActionsStruct actionObj)
 {   
     system("clear");
+    drawPotGraphics();
     //=================================================HUD=================================================
 
-
-    //Draw pot value frame
-    SetCursorPos(0,36);
-    cout << "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓";
-    for (int i = 37; i < 41; i++)
-    {
-        SetCursorPos(23,i);
-        cout << "█";
-    }
-
     //Draws down UI Bar
-    SetCursorPos(3,38);
+    SetCursorPos(UI_CURRENT_POT_TEXT_X, UI_CURRENT_POT_TEXT_Y);
     cout << "Current Pot: " + to_string(actionObj.currentPot) + "$";    //Prints current pot value
 
     //Bottom bars
@@ -127,11 +135,11 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     //===============================================POP TEXT===================================================
 
     //Last action text
-    SetCursorPos(UI_CALL_SLIDER_POS, UI_BUTTON_ROW_ID);
+    SetCursorPos(UI_TEMP_HAND_NAME, UI_BUTTON_ROW_ID);
     cout << "This is the temp pace for hi card";
 
     //Draw custom UI center screen pop up
-    if (actionObj.bigActionText != "")  //Draw border for text if text is filled
+    if (actionObj.bigActionText != "" || true)  //Draw border always
     {
         SetCursorPos(0, 8);
         for (int i = 0; i < WINDOW_WIDTH; i++) {cout << "=";}   //Draw border
@@ -150,10 +158,6 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
     actionObj.highestCall - players[currentPlayer].moneyPut == 0 ? cout << "CHECK" : cout << "CALL";
     SetCursorPos(UI_BUTTON_3_START_POS, UI_BUTTON_ROW_ID);
     cout << "RAISE";
-
-    //Call action buttons
-    SetCursorPos(UI_CALL_INPUT_BOX_POS, UI_BUTTON_ROW_ID);
-    cout << "▒▒▒▒▒";
 
     //Draw graphic representation of selected button
     switch (cursorPos)
@@ -198,6 +202,23 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
         cout << "#";
         SetCursorPos(UI_BUTTON_3_START_POS + 10, UI_BUTTON_ROW_ID);
         cout << "#";
+
+         //Draw raise button money value frame
+        SetCursorPos(UI_BUTTON_3_START_POS - 3, UI_BUTTON_ROW_ID - 3);
+        cout << "║";
+        SetCursorPos(UI_BUTTON_3_START_POS + 6, UI_BUTTON_ROW_ID - 3);
+        cout << "║";
+        SetCursorPos(UI_BUTTON_3_START_POS - 3, UI_BUTTON_ROW_ID - 4);
+        cout << "║";
+        SetCursorPos(UI_BUTTON_3_START_POS + 6, UI_BUTTON_ROW_ID - 4);
+        cout << "║";
+        SetCursorPos(UI_BUTTON_3_START_POS - 3, UI_BUTTON_ROW_ID - 5);
+        cout << "╔════════╗";
+        SetCursorPos(UI_BUTTON_3_START_POS - 1, UI_BUTTON_ROW_ID - 4);
+        cout << "VALUE:";
+        SetCursorPos(UI_BUTTON_3_START_POS - 1, UI_BUTTON_ROW_ID - 3);
+        cout << "▒▒▒▒▒▒";
+
         break;
     }
 
@@ -250,14 +271,14 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
 
 
     //================================================BUFFER CARDS=================================================
-    SetCursorPos(((WINDOW_WIDTH / 2) - 12) - (8 * (actionObj.gameState - 1)), TABLE_CARDS_RENDER_POS_Y); //Draws table cards
+    SetCursorPos(((WINDOW_WIDTH / 2) - 12) - (8 * (actionObj.gameState - 1) - TABLE_CARDS_RENDER_POS_X), TABLE_CARDS_RENDER_POS_Y); //Draws table cards
     for (int i = -1; i < 11; i++)    //Size of card is 11 rows
     {
         for (int j = 0; j < actionObj.gameState; j++) //Table cards index
         {
             cout << cardBuff[j][i];
         }
-        SetCursorPos(((WINDOW_WIDTH / 2) - 12) - (8 * (actionObj.gameState - 1)), TABLE_CARDS_RENDER_POS_Y + i);
+        SetCursorPos(((WINDOW_WIDTH / 2) - 12) - (8 * (actionObj.gameState - 1) - TABLE_CARDS_RENDER_POS_X), TABLE_CARDS_RENDER_POS_Y + i);
     }
     SetCursorPos(PLAYER_HAND_RENDER_POS_X, PLAYER_HAND_RENDER_POS_Y);
     for (int i = -1; i < 11; i++)    //Size of card is 11 rows
