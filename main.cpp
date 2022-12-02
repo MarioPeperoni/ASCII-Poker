@@ -23,10 +23,10 @@ cardStruct cardObj;
 rendererStruct rednererObj;
 gameActionsStruct actionsObj;
 
-int currPlayer = 0;
+int currPlayer = 0;         //Current player int
 
-int cardsGenerated = 0; //Index for generated cards (used for comp)
-int bufferIndex = 0;    //Buffer index
+int cardsGenerated = 0;     //Index for generated cards (used for comp)
+int bufferIndex = 0;        //Buffer index
 bool initDefNames = true;   //Bool for creating default names for players
 
 bool checkIfCardValid(bool isTable, int playerID, int cardID)
@@ -149,20 +149,21 @@ void _do_nothing(){}    //Do nothing void
 void switchPlayer(bool playerChangeScreen)
 {
     playerObject[currPlayer].isCurrentPlayer = false;    //Set false flag on current player
-    if (currPlayer == 3) //Cycle player
-    {
-        currPlayer = -1;
-    }
-    currPlayer++;   //Go to next player index
+    currPlayer == 3 ? currPlayer = 0 : currPlayer++;    //Loop players
     playerObject[currPlayer].isCurrentPlayer = true;    //Set true flag on next player
+    if (playerObject[currPlayer].nextRoundPlayer)   //Check if round looped
+    {
+        actionsObj.increaseGameState(); //Increase game state
+    }
+    
     if (playerChangeScreen)
     {
         playerObject[currPlayer].folded ? switchPlayer(true) : rednererObj.renderPlayerChangeScreen(currPlayer);    //Check if player fold
         playerObject[currPlayer].inGame ? switchPlayer(true) : rednererObj.renderPlayerChangeScreen(currPlayer);    //Check if is still in game
     }
     
-    playerObject[currPlayer].folded ? switchPlayer(true) : _do_nothing();    //Check if player fold
-    playerObject[currPlayer].inGame ? switchPlayer(true) : _do_nothing();    //Check if is still in game
+    playerObject[currPlayer].folded ? switchPlayer(false) : _do_nothing();    //Check if player fold
+    playerObject[currPlayer].inGame ? switchPlayer(false) : _do_nothing();    //Check if is still in game
 }
 
 int main()
@@ -175,6 +176,7 @@ int main()
     currPlayer = actionsObj.currentBigBlindPlayer ; //Player 1 is current player (new tracker)
     switchPlayer(false);
     switchPlayer(true);
+    playerObject[currPlayer].nextRoundPlayer = true;
     createNewGame();
 
     if (initDefNames)   //Set default player names "Player (no)"
@@ -209,7 +211,14 @@ int main()
             break;
         
         case 4: //Fold button pressed
-            actionsObj.foldAction(playerObject[currPlayer]);
+            if(actionsObj.foldAction(playerObject[currPlayer]) == false)    //If fold ask for change of round starting player
+            {
+                actionsObj.determineNextRoundStartingPlayer(playerObject);
+                for (int i = 0; i < 4; i++) //Fetch all players data
+                {
+                    playerObject[i] = actionsObj.fetchPlayerData(i);
+                }
+            }
             playerObject[currPlayer] = actionsObj.fetchPlayerData();
             sleep(WAIT_TIME_BETWEEN_ACTIONS);
             switchPlayer(true);
@@ -228,7 +237,7 @@ int main()
                 playerObject[currPlayer] = actionsObj.fetchPlayerData();
                 sleep(WAIT_TIME_BETWEEN_ACTIONS);
             }
-        switchPlayer(true);
+            switchPlayer(true);
         break;
 
         case 6: //Raise button pressed

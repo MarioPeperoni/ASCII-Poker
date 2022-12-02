@@ -3,9 +3,49 @@
 #include "gameActions.h"
 #include "renderer.h"
 #include "playerData.h"
+#include "card.h"
 
 rendererStruct rendererObj;
-playerDataStruct fetchedPlayerObj[2];
+playerDataStruct fetchedPlayerObj[4];
+
+void gameActionsStruct::determineNextRoundStartingPlayer(playerDataStruct playerObj[4]) //Determine next player value for game round checking
+{
+    int currentPlayerStartingID;
+    bool found = false;
+    for (int i = 0; i < 4; i++) //Find nextRoundPlayer flag 
+    {
+       if (playerObj[i].nextRoundPlayer)    //If found
+       {
+            currentPlayerStartingID = i;    //Set index of player
+       }
+       playerObj[currentPlayerStartingID].nextRoundPlayer = false;  //Delete nextRoundPlayer flag for folded player
+    }
+    while (!found)  //While not found
+    {
+        currentPlayerStartingID == 3 ? currentPlayerStartingID = 0 : currentPlayerStartingID++; //Loop variable
+        if (playerObj[currentPlayerStartingID].inGame && !playerObj[currentPlayerStartingID].folded)    //If player still playing in round
+        {
+            playerObj[currentPlayerStartingID].nextRoundPlayer = true;  //Set player flag to true
+            found = true;   //Found
+        }
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        fetchedPlayerObj[i] = playerObj[i]; //Fetch all players data
+    }
+}
+
+void gameActionsStruct::increaseGameState()
+{
+    if (gameActionsStruct::gameState < 3)   //If less than 3 cards are shown (usaually 0)
+    {
+        gameActionsStruct::gameState = 3;   //Show 3 cards
+    }
+    else if (gameActionsStruct::gameState < 5)  //If less then 5 cards and more than 3 are shown
+    {
+        gameActionsStruct::gameState++; //Show one card more
+    }
+}
 
 bool gameActionsStruct::foldAction(playerDataStruct playerObj)
 {
@@ -13,7 +53,11 @@ bool gameActionsStruct::foldAction(playerDataStruct playerObj)
     playerObj.lastPlayerAction = "Folded";  //Set player last action string
     gameActionsStruct::currentActionText = "Folded";    //Set action text
     fetchedPlayerObj[0] = playerObj;   //Copy contents of playerObj to fetchedPlayerObj
-    return true;
+    if(playerObj.nextRoundPlayer == true)
+    {
+        return false;   //Return false that triggers determineNextRoundStartingPlayer action in main
+    }
+    return true;    //Return true if all good
 }
 
 bool gameActionsStruct::checkAction(playerDataStruct playerObj)
@@ -169,6 +213,14 @@ playerDataStruct gameActionsStruct::fetchPlayerData(int indexInMem)   //Send pla
     
     case 1:
         return fetchedPlayerObj[1];
+        break;
+    
+    case 2:
+        return fetchedPlayerObj[2];
+        break;
+
+    case 3:
+        return fetchedPlayerObj[3];
         break;
     }
     return fetchedPlayerObj[0];

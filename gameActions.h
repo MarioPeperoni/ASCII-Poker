@@ -4,6 +4,7 @@
 #include <string>
 
 #include "playerData.h"
+#include "card.h"
 
 struct gameActionsStruct
 {
@@ -23,11 +24,17 @@ struct gameActionsStruct
     int currentBigBlindPlayer;
     int currentSmallBlindPlayer;
 
+    //======================================PLAYER ACTIONS==========================================
     bool checkAction(playerDataStruct playerObj);   //Call check action
     bool foldAction(playerDataStruct playerObj);    //Call fold cation on player
     bool callAction(playerDataStruct playerObj);    //Calls call action on player
     bool raiseAction(playerDataStruct playerObj);   //Calls raise action on player
     bool bidAction(playerDataStruct playerObj);     //Calls bid action on player
+
+    void increaseGameState();
+    void determineRoundWinner(playerDataStruct playersObj[4]);
+    void determineNextRoundStartingPlayer(playerDataStruct playerObj[4]);   //Void for changing first player increasting round
+    void lookForSets(playerDataStruct playerObj, int gameState, cardStruct::singleCard tableCards[5]);
 
     playerDataStruct fetchPlayerData();
     playerDataStruct fetchPlayerData(int indexInMem);

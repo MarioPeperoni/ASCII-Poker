@@ -6,8 +6,7 @@ struct cardStruct
     public:
     enum Rank
     {
-        ACE = 1,
-        TWO,
+        TWO = 2,
         THREE,
         FOUR,
         FIVE,
@@ -18,7 +17,8 @@ struct cardStruct
         TEN,
         JACK,
         QUEEN,
-        KING
+        KING,
+        ACE
     };
 
     enum Suit
