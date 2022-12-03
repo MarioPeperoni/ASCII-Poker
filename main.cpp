@@ -17,6 +17,7 @@ using namespace std;
 playerDataStruct playerObject[4];   //Player object that stores all player values
 cardStruct::singleCard cardsTable[5];   //5 table cards
 cardStruct::singleCard cardsGame[13];   //Storing all cards in game (only used for comp)
+playerDataStruct playerObjectTemplate;
 
 inputHandlerStruct inputHandelerObj;
 cardStruct cardObj;
@@ -111,13 +112,15 @@ void bufferAll()
     bufferIndex = 0;
 }
 
-void createNewGame()
+void createNewTable()
 {
     cardsGenerated = 0; //Prepare to generate new set of cards
     generateTableCards();   //Generate cards at the table
     for (int i = 0; i < 4; i++)
     {
         generatePlayerCards(i); //Generate cards for eatch player
+        playerObject[i].folded = false;
+        playerObject[i].lastPlayerAction = "";
     }
     bufferAll();    //Buffer all cards (player and table)
     actionsObj.gameState = 0;  //0 cards at the table shown
@@ -127,14 +130,14 @@ void createNewGame()
     //=================================================SET BLINDS=================================================
     //Set index for big blind player
     actionsObj.currentBigBlindPlayer == 3 ? actionsObj.currentBigBlindPlayer = 0 : actionsObj.currentBigBlindPlayer++;   //Go to the next index
-    while (!playerObject[actionsObj.currentBigBlindPlayer].inGame == false)  //If player is still playing
+    while (playerObject[actionsObj.currentBigBlindPlayer].inGame == false)  //If player is still playing
     {
         actionsObj.currentBigBlindPlayer == 3 ? actionsObj.currentBigBlindPlayer = 0 : actionsObj.currentBigBlindPlayer++;   //Go to the next index
     }    
 
     //Set index for small blind player
     actionsObj.currentSmallBlindPlayer == 3 ? actionsObj.currentSmallBlindPlayer = 0 : actionsObj.currentSmallBlindPlayer++;   //Go to the next index
-    while (!playerObject[actionsObj.currentSmallBlindPlayer].inGame == false)  //If player is still playing
+    while (playerObject[actionsObj.currentSmallBlindPlayer].inGame == false)  //If player is still playing
     {
         actionsObj.currentSmallBlindPlayer == 3 ? actionsObj.currentSmallBlindPlayer = 0 : actionsObj.currentSmallBlindPlayer++;   //Go to the next index
     }
@@ -153,22 +156,23 @@ void switchPlayer(bool playerChangeScreen)
     playerObject[currPlayer].isCurrentPlayer = true;    //Set true flag on next player
     if (playerObject[currPlayer].nextRoundPlayer)   //Check if round looped
     {
-        actionsObj.increaseGameState(); //Increase game state
+        actionsObj.increaseGameState(playerObject); //Increase game state
     }
-    
     if (playerChangeScreen)
     {
         playerObject[currPlayer].folded ? switchPlayer(true) : rednererObj.renderPlayerChangeScreen(currPlayer);    //Check if player fold
-        playerObject[currPlayer].inGame ? switchPlayer(true) : rednererObj.renderPlayerChangeScreen(currPlayer);    //Check if is still in game
+        //playerObject[currPlayer].inGame ? switchPlayer(true) : rednererObj.renderPlayerChangeScreen(currPlayer);    //Check if is still in game
     }
-    
     playerObject[currPlayer].folded ? switchPlayer(false) : _do_nothing();    //Check if player fold
-    playerObject[currPlayer].inGame ? switchPlayer(false) : _do_nothing();    //Check if is still in game
+    //playerObject[currPlayer].inGame ? switchPlayer(false) : _do_nothing();    //Check if is still in game
 }
 
-int main()
+void initNewGame()  //Init new values for new game
 {
-    //=====================================================GAME INIT====================================================
+    for (int i = 0; i < 4; i++) //Set all player objects to default
+    {
+        playerObject[i] = playerObjectTemplate;
+    }
     srand(time(0)); //Set seed of randomizer for current time
     actionsObj.currentBigBlindPlayer = rand() % 4;
     actionsObj.currentSmallBlindPlayer = actionsObj.currentBigBlindPlayer - 1;
@@ -177,8 +181,12 @@ int main()
     switchPlayer(false);
     switchPlayer(true);
     playerObject[currPlayer].nextRoundPlayer = true;
-    createNewGame();
-
+    actionsObj.playersFolded = 0;
+    for (int i = 0; i < 4; i++) //Set all inGame flag to true
+    {
+        playerObject[i].inGame = true;
+    }
+    createNewTable();   //Create new table
     if (initDefNames)   //Set default player names "Player (no)"
     {
         for (int i = 0; i < 4; i++)
@@ -186,7 +194,11 @@ int main()
             playerObject[i].playerName = "Player " + to_string(i + 1);
         }
     }
-    
+}
+
+int main()
+{
+    initNewGame();  //Init new game
     //===================================================RENDER LOOP==================================================
     while (true)    //Gameplay loop
     {
@@ -208,8 +220,12 @@ int main()
             actionsObj.currentHiBlind = actionsObj.checkBlinds(actionsObj.turnsPlayed);
             break;
         
-        case 8: //DEBUG 4: New game
-            createNewGame();
+        case 8: //DEBUG 4: New table
+            createNewTable();
+            break;
+        
+        case 9: //DEBUG 5: Init new game
+            initNewGame();
             break;
         
         case 4: //Fold button pressed
@@ -222,6 +238,12 @@ int main()
                 }
             }
             playerObject[currPlayer] = actionsObj.fetchPlayerData();
+            if (actionsObj.playersFolded == 3)
+            {
+                rednererObj.drawEndRoundScreen(actionsObj.endRound(playerObject));
+                createNewTable();
+                break;
+            }
             sleep(WAIT_TIME_BETWEEN_ACTIONS);
             switchPlayer(true);
             break;

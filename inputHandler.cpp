@@ -47,6 +47,9 @@ int inputHandlerStruct::getInput()
 
     case '4':   //DEBUG 4: New game
         return 8;
+    
+    case '5':
+        return 9;
 
     case 'p':
         switch (inputHandlerStruct::cursorPos)

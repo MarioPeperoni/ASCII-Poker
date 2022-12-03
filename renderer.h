@@ -47,5 +47,6 @@ struct rendererStruct
     std::string drawCardRank(cardStruct::Rank rank, bool up);
     std::string drawDecoOnCard(cardStruct::Rank rank, int w1, int w2, int w3, int w4, int w5, std::string suitCh);
     void SetCursorPos(int XPos, int YPos);
+    void drawEndRoundScreen(playerDataStruct playerWon);
 };
 #endif

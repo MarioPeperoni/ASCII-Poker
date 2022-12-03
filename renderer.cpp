@@ -106,8 +106,22 @@ void rendererStruct::drawPotGraphics()
         }
         SetCursorPos(G_POT_START_POS_X, G_POT_START_POS_Y + i);
     }
-    
-    
+}
+void rendererStruct::drawEndRoundScreen(playerDataStruct playerWon)
+{
+    SetCursorPos((WINDOW_WIDTH/2) - 22, WINDOW_HEIGHT/2 - 1);
+    cout << "╔═══════════════════════════════════════════╗";
+    SetCursorPos((WINDOW_WIDTH/2) - 22, WINDOW_HEIGHT/2);
+    cout << "║                                           ║";
+    string printString = playerWon.playerName + " won with " + playerWon.setName;
+    SetCursorPos((WINDOW_WIDTH/2) - printString.length() / 2, WINDOW_HEIGHT/2);
+    cout << printString;
+    SetCursorPos((WINDOW_WIDTH/2) - 22, WINDOW_HEIGHT/2 + 1);
+    cout << "║ Press any button to play another round... ║";
+    SetCursorPos((WINDOW_WIDTH/2) - 22, WINDOW_HEIGHT/2 + 2);
+    cout << "╚═══════════════════════════════════════════╝";
+    cin.get();
+    cin.get();
 }
 
 void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], int currentPlayer, gameActionsStruct actionObj)
@@ -330,5 +344,6 @@ void rendererStruct::renderPlayerChangeScreen(int currentPlayer)
     cout << "[Player " + to_string(currentPlayer + 1) + " turn]";
     SetCursorPos((WINDOW_WIDTH/2) - 16, WINDOW_HEIGHT/2 + 1);
     cout << "Press any button to continue...";
+    cin.get();
     cin.get();
 }

@@ -15,6 +15,7 @@ struct gameActionsStruct
     int gameState;  //State of the game ID (refers to no of cards on the table)
     int turnsPlayed = 0;    //Number of turns played
     int currentPot; //Value of current pot
+    int playersFolded = 0;  //No of players folded
     
     int highestCall;    //Highest call in the game
 
@@ -31,8 +32,8 @@ struct gameActionsStruct
     bool raiseAction(playerDataStruct playerObj);   //Calls raise action on player
     bool bidAction(playerDataStruct playerObj);     //Calls bid action on player
 
-    void increaseGameState();
-    void determineRoundWinner(playerDataStruct playersObj[4]);
+    void increaseGameState(playerDataStruct players[4]);
+    playerDataStruct endRound(playerDataStruct playersObj[4]);
     void calculateScore(playerDataStruct player, int gameState, cardStruct::singleCard cardsTable[5]);
     void determineNextRoundStartingPlayer(playerDataStruct playerObj[4]);   //Void for changing first player increasting round
     void lookForSets(playerDataStruct playerObj, int gameState, cardStruct::singleCard tableCards[5]);

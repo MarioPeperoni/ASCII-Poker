@@ -36,7 +36,7 @@ void gameActionsStruct::determineNextRoundStartingPlayer(playerDataStruct player
     }
 }
 
-void gameActionsStruct::increaseGameState()
+void gameActionsStruct::increaseGameState(playerDataStruct players[4])
 {
     if (gameActionsStruct::gameState < 3)   //If less than 3 cards are shown (usaually 0)
     {
@@ -46,6 +46,10 @@ void gameActionsStruct::increaseGameState()
     {
         gameActionsStruct::gameState++; //Show one card more
     }
+    else if (gameState == 5)
+    {
+        rendererObj.drawEndRoundScreen(endRound(players));
+    }
 }
 
 bool gameActionsStruct::foldAction(playerDataStruct playerObj)
@@ -54,6 +58,12 @@ bool gameActionsStruct::foldAction(playerDataStruct playerObj)
     playerObj.lastPlayerAction = "Folded";  //Set player last action string
     gameActionsStruct::currentActionText = "Folded";    //Set action text
     fetchedPlayerObj[0] = playerObj;   //Copy contents of playerObj to fetchedPlayerObj
+    gameActionsStruct::playersFolded++;
+    if (gameActionsStruct::playersFolded == 3)  //If if is 3 player that folded
+    {
+        return true;
+    }
+    
     if(playerObj.nextRoundPlayer == true)
     {
         return false;   //Return false that triggers determineNextRoundStartingPlayer action in main
@@ -252,9 +262,44 @@ cardStruct::singleCard checkHiCard(playerDataStruct player, int gameState, cardS
     return hiCard;
 }
 
-cardStruct::pairs checkPairs(playerDataStruct player, int gameState, cardStruct::singleCard cardsTable[5])
+/*cardStruct::pairs checkPairs(playerDataStruct player, int gameState, cardStruct::singleCard cardsTable[5])
 {
-    
+    //TODO: Code
+}*/
+
+playerDataStruct gameActionsStruct::endRound(playerDataStruct playersObj[4])
+{
+    playerDataStruct returnPlayer;
+    int biggestValueOfSet = 0;
+    cardStruct::singleCard biggestHiCardInSet;
+    biggestHiCardInSet.rank = (cardStruct::Rank)0;
+
+    for (int i = 0; i < 4; i++) //Look for biggest set value in game
+    {
+        if (playersObj[i].valueOfSet > biggestValueOfSet)
+        {
+            biggestValueOfSet = playersObj[i].valueOfSet;
+        }
+    }
+    for (int i = 0; i < 4; i++) //Look for biggest hi card in set to determine draw
+    {
+        if (playersObj[i].valueOfSet == biggestValueOfSet)
+        {
+            if (playersObj[i].hiCardInSet.rank > biggestHiCardInSet.rank)
+            {
+                biggestHiCardInSet = playersObj[i].hiCardInSet;
+            }
+        }
+    }
+    for (int i = 0; i < 4; i++) //Look for player with best cards
+    {
+        if (playersObj[i].valueOfSet == biggestValueOfSet && playersObj[i].hiCardInSet.rank == biggestHiCardInSet.rank && playersObj[i].hiCardInSet.suit == biggestHiCardInSet.suit)
+        {
+            returnPlayer = playersObj[i];
+            return returnPlayer;   //Return player id
+        }
+    }
+    return returnPlayer;
 }
 
 void gameActionsStruct::calculateScore(playerDataStruct player, int gameState, cardStruct::singleCard cardsTable[5])
