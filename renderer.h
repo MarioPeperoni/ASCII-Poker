@@ -40,7 +40,6 @@
 
 struct rendererStruct
 {
-    public:
     void drawPotGraphics();
     void bufferCard(cardStruct::Rank rank, cardStruct::Suit suit, int cardNo);
     void renderScreen(int cursorPos, playerDataStruct players[4], int currentPlayer, gameActionsStruct actionObj);

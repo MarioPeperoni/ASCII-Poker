@@ -33,6 +33,7 @@ struct gameActionsStruct
 
     void increaseGameState();
     void determineRoundWinner(playerDataStruct playersObj[4]);
+    void calculateScore(playerDataStruct player, int gameState, cardStruct::singleCard cardsTable[5]);
     void determineNextRoundStartingPlayer(playerDataStruct playerObj[4]);   //Void for changing first player increasting round
     void lookForSets(playerDataStruct playerObj, int gameState, cardStruct::singleCard tableCards[5]);
 

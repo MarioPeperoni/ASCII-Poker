@@ -30,7 +30,7 @@ string rendererStruct::drawCardRank(cardStruct::Rank rank, bool up) //Outputs vi
     string result;
     switch ((int)rank)
     {
-    case 1:
+    case 14:
         result = up ? " A" : "A ";
         break;
     case 10:
@@ -136,7 +136,7 @@ void rendererStruct::renderScreen(int cursorPos, playerDataStruct players[4], in
 
     //Last action text
     SetCursorPos(UI_TEMP_HAND_NAME, UI_BUTTON_ROW_ID);
-    cout << "This is the temp pace for hi card";
+    cout << players[currentPlayer].setName;
 
     //Draw custom UI center screen pop up
     if (actionObj.bigActionText != "" || true)  //Draw border always

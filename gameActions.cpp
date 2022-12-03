@@ -7,6 +7,7 @@
 
 rendererStruct rendererObj;
 playerDataStruct fetchedPlayerObj[4];
+cardStruct cardTranslatorObj;
 
 void gameActionsStruct::determineNextRoundStartingPlayer(playerDataStruct playerObj[4]) //Determine next player value for game round checking
 {
@@ -224,4 +225,42 @@ playerDataStruct gameActionsStruct::fetchPlayerData(int indexInMem)   //Send pla
         break;
     }
     return fetchedPlayerObj[0];
+}
+
+//===========================================SET OF CARDS=================================================
+
+cardStruct::singleCard checkHiCard(playerDataStruct player, int gameState, cardStruct::singleCard cardsTable[5])
+{
+    cardStruct::singleCard hiCard;
+    hiCard.rank = cardStruct::TWO;
+    for (int i = 0; i < 2; i++) //Look for hi card in players deck
+    {
+        if (player.playerHand[i].rank > hiCard.rank)
+        {
+            hiCard.rank = player.playerHand[i].rank;
+            hiCard.suit = player.playerHand[i].suit;
+        }
+    }
+    for (int i = 0; i < gameState; i++)
+    {
+        if (cardsTable[i].rank > hiCard.rank)
+        {
+            hiCard.rank = cardsTable[i].rank;
+            hiCard.suit = cardsTable[i].suit;
+        }
+    }
+    return hiCard;
+}
+
+cardStruct::pairs checkPairs(playerDataStruct player, int gameState, cardStruct::singleCard cardsTable[5])
+{
+    
+}
+
+void gameActionsStruct::calculateScore(playerDataStruct player, int gameState, cardStruct::singleCard cardsTable[5])
+{
+    fetchedPlayerObj[0] = player;
+    fetchedPlayerObj[0].hiCardInSet = checkHiCard(player, gameState, cardsTable);
+    fetchedPlayerObj[0].setName = cardTranslatorObj.translateCard(checkHiCard(player, gameState, cardsTable).rank) + " HIGH";
+    fetchedPlayerObj[0].valueOfSet = 1;
 }

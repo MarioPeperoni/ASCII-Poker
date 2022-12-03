@@ -18,7 +18,7 @@ struct cardStruct
         JACK,
         QUEEN,
         KING,
-        ACE
+        ACE = 14
     };
 
     enum Suit
@@ -34,5 +34,14 @@ struct cardStruct
         Rank rank;
         Suit suit;
     };
+
+    struct pairs
+    {
+        int noOfPairs = 0;  //No of pairs
+        Rank pairs[4];  //Pairs stored max 4 pairs
+    };
+
+    std::string translateCard(cardStruct::Rank);
+    std::string translateCard(cardStruct::Suit);
 };
 #endif

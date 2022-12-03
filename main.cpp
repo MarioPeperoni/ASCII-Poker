@@ -55,7 +55,7 @@ void generatePlayerCards(int playerID)
 {
     //Generate 1st card for player
     generate1stCardLabel:
-    playerObject[playerID].playerHand[0].rank = (cardStruct::Rank)((rand() % 12) + 1);
+    playerObject[playerID].playerHand[0].rank = (cardStruct::Rank)((rand() % 13) + 2);
     playerObject[playerID].playerHand[0].suit = (cardStruct::Suit)((rand() % 4) + 3);
     if (!checkIfCardValid(false, playerID, 0))  //If card is valid
     {
@@ -67,7 +67,7 @@ void generatePlayerCards(int playerID)
 
     //Generate 2nd card for player
     generate2ndCardLabel:
-    playerObject[playerID].playerHand[1].rank = (cardStruct::Rank)((rand() % 12) + 1);
+    playerObject[playerID].playerHand[1].rank = (cardStruct::Rank)((rand() % 13) + 2);
     playerObject[playerID].playerHand[1].suit = (cardStruct::Suit)((rand() % 4) + 3);
     if (!checkIfCardValid(false, playerID, 1))  //If card is valid
     {
@@ -83,7 +83,7 @@ void generateTableCards()
     for (int i = 0; i < 5; i++)  //Generate cards at the table
     {
         generateTableCardAgainLabel:
-        cardsTable[i].rank = (cardStruct::Rank)((rand() % 12) + 1);
+        cardsTable[i].rank = (cardStruct::Rank)((rand() % 13) + 2);
         cardsTable[i].suit = (cardStruct::Suit)((rand() % 4) + 3);
         if (!checkIfCardValid(true, 0, i))  //If card is valid
         {
@@ -190,6 +190,8 @@ int main()
     //===================================================RENDER LOOP==================================================
     while (true)    //Gameplay loop
     {
+        actionsObj.calculateScore(playerObject[currPlayer], actionsObj.gameState, cardsTable);
+        playerObject[currPlayer] = actionsObj.fetchPlayerData();
         rednererObj.renderScreen(inputHandelerObj.cursorPos, playerObject, currPlayer, actionsObj); //Render screen from buffer
         switch (inputHandelerObj.getInput())
         {
